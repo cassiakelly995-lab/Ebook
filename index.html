@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca de Prompts Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e6f0;
+    --muted: #7a7890;
+    --accent1: #c8a96e;
+    --accent2: #7c6af5;
+    --accent3: #e8736a;
+    --accent4: #5bc4a0;
+    --accent5: #e87fd4;
+    --accent6: #5baee8;
+    --accent7: #e8c45b;
+    --accent8: #a0e87f;
+    --accent9: #e88a5b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Header */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 80px 20px 60px;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(200,169,110,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    border: 1px solid rgba(200,169,110,0.3);
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent1);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent1);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Search */
+  .search-wrap {
+    padding: 0 20px 40px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    position: relative;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px 14px 48px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box input:focus { border-color: rgba(200,169,110,0.4); }
+  .search-box input::placeholder { color: var(--muted); }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+  }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 0 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar { display: none; }
+
+  .filter-btn {
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .filter-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .filter-btn.active { background: var(--accent1); border-color: var(--accent1); color: #0a0a0f; font-weight: 600; }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+    padding: 0 20px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 20px 20px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .card-meta { flex: 1; }
+
+  .card-category {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+  }
+
+  .card-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .prompts-list {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prompt-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    group: true;
+  }
+
+  .prompt-item:hover {
+    border-color: rgba(255,255,255,0.12);
+    background: #20202e;
+  }
+
+  .prompt-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c4c2d4;
+    padding-right: 32px;
+  }
+
+  .prompt-text strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s;
+    opacity: 0;
+  }
+
+  .prompt-item:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { color: var(--accent1); }
+
+  .copy-btn.copied { color: var(--accent4) !important; opacity: 1 !important; }
+
+  .card-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .show-more {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .show-more:hover { color: var(--text); }
+
+  .copy-all {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 5px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .copy-all:hover { border-color: var(--accent1); color: var(--accent1); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--surface2);
+    border: 1px solid rgba(91,196,160,0.3);
+    color: var(--accent4);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'DM Mono', monospace;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 100;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Hidden */
+  .hidden { display: none !important; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    max-width: 1200px;
+    margin: 0 auto 40px;
+  }
+
+  .section-label {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    padding: 0 20px;
+  }
+
+  .no-results {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    grid-column: 1/-1;
+    font-size: 16px;
+  }
+
+  .no-results span { font-size: 40px; display: block; margin-bottom: 16px; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .stats-row { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">✦ Biblioteca Premium de Prompts</div>
+  <h1>Prompts para<br><em>E-books</em> de Sucesso</h1>
+  <p class="subtitle">Coleção curada de prompts profissionais para criar e-books que vendem em todos os nichos mais lucrativos.</p>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Categorias</div></div>
+    <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Prompts</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Prontos para Usar</div></div>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Buscar prompts por palavra-chave..." oninput="filterAll()">
+  </div>
+</div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="setFilter('todos', this)">Todos</button>
+  <button class="filter-btn" onclick="setFilter('receitas', this)">🍽️ Receitas</button>
+  <button class="filter-btn" onclick="setFilter('meditacao', this)">🧘 Meditação</button>
+  <button class="filter-btn" onclick="setFilter('nicho', this)">🎯 Nicho</button>
+  <button class="filter-btn" onclick="setFilter('afirmacoes', this)">✨ Afirmações</button>
+  <button class="filter-btn" onclick="setFilter('vendas', this)">💰 Vendas</button>
+  <button class="filter-btn" onclick="setFilter('dropshipping', this)">📦 Dropshipping</button>
+  <button class="filter-btn" onclick="setFilter('produtividade', this)">⏰ Produtividade</button>
+  <button class="filter-btn" onclick="setFilter('instagram', this)">📱 Instagram</button>
+  <button class="filter-btn" onclick="setFilter('ia', this)">🤖 Conteúdo IA</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="toast" id="toast">✓ Copiado para a área de transferência</div>
+
+<script>
+const data = [
+  {
+    id: "receitas",
+    category: "E-book de Receitas",
+    icon: "🍽️",
+    color: "#e87f5b",
+    bg: "rgba(232,127,91,0.12)",
+    prompts: [
+      { text: "Crie um <strong>índice completo</strong> para um e-book de receitas fitness com 30 receitas low carb, organizadas por café da manhã, almoço, jantar e snacks. Inclua tempo de preparo e nível de dificuldade." },
+      { text: "Escreva uma <strong>introdução envolvente</strong> para um e-book de receitas italianas autênticas, contando a história da culinária italiana e por que essas receitas são especiais para reuniões em família." },
+      { text: "Desenvolva uma <strong>ficha técnica completa</strong> para a receita de bolo de chocolate sem glúten: ingredientes com medidas precisas, modo de preparo passo a passo, dicas do chef, variações e informação nutricional." },
+      { text: "Crie <strong>10 dicas práticas de mise en place</strong> para iniciantes na cozinha, explicando cada uma de forma simples e como elas economizam tempo e evitam desperdício." },
+      { text: "Escreva um capítulo sobre <strong>substituições inteligentes</strong> em receitas para veganos, com tabela de substituição de ovos, laticínios e carnes por ingredientes plant-based." },
+      { text: "Crie uma <strong>lista de compras semanal</strong> para um plano de 7 dias baseado nas receitas do e-book, com quantidades exatas e custo estimado por porção." },
+      { text: "Desenvolva uma seção de <strong>erros comuns na cozinha</strong> e como evitá-los, com explicações científicas simples sobre por que cada erro acontece." },
+      { text: "Escreva a <strong>biografia da autora</strong> do e-book de receitas: chef apaixonada, mãe de 2 filhos, que transformou sua cozinha caseira em um negócio de sucesso — tom acolhedor e inspirador." },
+      { text: "Crie <strong>variações de dificuldade</strong> para cada receita: versão iniciante (15 min), versão intermediária (30 min) e versão gourmet (1 hora), explicando as diferenças técnicas." },
+      { text: "Escreva uma seção <strong>'Harmonizações e Apresentação'</strong> ensinando como empratar de forma instagramável em 5 passos simples, com exemplos de guarnições." },
+      { text: "Crie um capítulo completo sobre <strong>técnicas de conservação de alimentos</strong>: como congelar corretamente cada tipo de ingrediente, duração, embalagem ideal e como reutilizar sobras com novas receitas criativas." },
+      { text: "Escreva uma seção sobre <strong>culinária afetiva e memórias gustativas</strong>: como apresentar cada receita com uma história pessoal de 3 parágrafos que cria conexão emocional com o leitor antes do passo a passo." },
+      { text: "Desenvolva um <strong>glossário culinário</strong> com 40 termos técnicos explicados de forma simples para iniciantes: de 'al dente' a 'zeste', com dicas de como dominar cada técnica em casa." },
+      { text: "Crie um capítulo de <strong>receitas de emergência</strong>: 10 pratos deliciosos feitos em menos de 20 minutos com ingredientes básicos de despensa, perfeitos para dias corridos." },
+      { text: "Escreva um guia de <strong>temperos e especiarias do mundo</strong>: como usar açafrão, za'atar, sumac, harissa e outros ingredientes exóticos para transformar receitas simples em pratos sofisticados." },
+      { text: "Desenvolva um capítulo sobre <strong>planejamento de cardápio para festas</strong>: menu completo para 10, 20 e 50 pessoas, cronograma de preparo e dicas para servir de forma elegante sem stress." },
+      { text: "Crie uma seção de <strong>receitas econômicas gourmet</strong>: 8 pratos com menos de R$20 por porção que parecem de restaurante, com dicas de apresentação que enganam qualquer convidado." },
+      { text: "Escreva um capítulo sobre <strong>a ciência do sabor</strong>: como o equilíbrio entre doce, salgado, azedo, amargo e umami funciona e como ajustar qualquer receita que ficou sem graça usando essa fórmula." },
+      { text: "Desenvolva um <strong>calendário sazonal de ingredientes</strong>: mês a mês, quais frutas, legumes e proteínas estão no pico de sabor e nutrição no Brasil, com uma receita exclusiva para cada período." },
+      { text: "Crie um capítulo de <strong>drinks e sobremesas express</strong>: 10 receitas de bebidas artesanais e 10 sobremesas de 5 ingredientes para encerrar qualquer refeição de forma marcante e fácil." }
+    ]
+  },
+  {
+    id: "meditacao",
+    category: "Meditações Guiadas",
+    icon: "🧘",
+    color: "#7c6af5",
+    bg: "rgba(124,106,245,0.12)",
+    prompts: [
+      { text: "Escreva um <strong>script de meditação guiada</strong> de 10 minutos para reduzir a ansiedade antes de dormir, usando técnica de body scan progressivo, com linguagem suave e pausas indicadas." },
+      { text: "Crie uma <strong>meditação de visualização criativa</strong> de 15 minutos focada em abundância e prosperidade, com cenário detalhado de praia ao pôr do sol, ancoragem sensorial completa." },
+      { text: "Desenvolva um <strong>script de respiração 4-7-8</strong> para iniciantes, explicando a técnica, seus benefícios científicos e guiando a prática por 8 minutos com contagem." },
+      { text: "Escreva uma <strong>meditação de autocompaixão</strong> baseada em técnicas de mindfulness de 12 minutos, especialmente para pessoas que sofrem de autocrítica severa ou perfeccionismo." },
+      { text: "Crie uma <strong>meditação matinal energizante</strong> de 7 minutos para ativar o sistema nervoso parassimpático, com afirmações integradas e exercícios de intenção para o dia." },
+      { text: "Desenvolva um <strong>script de meditação para crianças</strong> de 5 a 10 anos, com história de uma borboleta mágica, linguagem lúdica e técnicas de atenção plena adaptadas." },
+      { text: "Escreva uma <strong>meditação de cura emocional</strong> de 20 minutos integrando técnicas de EFT (tapping) e visualização, para liberação de mágoas e ressentimentos do passado." },
+      { text: "Crie um <strong>programa de 30 dias de meditação</strong> para iniciantes com estrutura progressiva, incluindo temas semanais, duração crescente e exercícios complementares." },
+      { text: "Desenvolva uma <strong>meditação para foco e produtividade</strong> de 10 minutos, usando técnica Pomodoro mental, ideal para antes de sessões de trabalho intenso." },
+      { text: "Escreva uma <strong>introdução científica</strong> sobre os benefícios da meditação para o e-book, citando estudos de neurociência sobre neuroplasticidade, cortisol e bem-estar geral." },
+      { text: "Crie um <strong>script de meditação de gratidão</strong> de 8 minutos com ancoragem corporal, técnica de escaneamento de memórias positivas e ritual de fechamento com intenção para o dia." },
+      { text: "Escreva uma <strong>meditação Yoga Nidra</strong> completa de 25 minutos — a 'soneca yóguica' — com rotação de consciência pelas 61 partes do corpo, visualização e estado hipnagógico guiado." },
+      { text: "Desenvolva um <strong>guia de meditação em movimento</strong>: técnicas de mindful walking, meditação em movimento consciente e como integrar atenção plena em atividades cotidianas como comer e lavar louça." },
+      { text: "Crie um <strong>script de meditação para luto e perda</strong> de 18 minutos com técnicas de Compassion Focused Therapy, reconhecimento das emoções sem julgamento e ancoragem no presente." },
+      { text: "Escreva uma <strong>meditação de chakras completa</strong> de 30 minutos, passando pelos 7 centros energéticos com visualização de cores, afirmações específicas e técnicas de respiração para cada chakra." },
+      { text: "Desenvolva um <strong>script de meditação para ansiedade social</strong> de 12 minutos, incluindo técnica de dessensibilização por imaginação, reprogramação de crenças sociais e âncora de segurança." },
+      { text: "Crie uma <strong>meditação de integração após o trabalho</strong> de 10 minutos para fazer a transição entre vida profissional e pessoal, com ritual de 'descompressão' e ativação do modo descanso." },
+      { text: "Escreva um <strong>guia de meditação com sons binaurais</strong>: o que são, frequências para cada objetivo (foco, relaxamento, criatividade, sono), como criar uma playlist e integrar ao e-book com QR codes." },
+      { text: "Desenvolva um <strong>script de meditação para dor crônica</strong> baseado em MBSR (Mindfulness-Based Stress Reduction), com técnicas validadas clinicamente para mudança de relação com o desconforto físico." },
+      { text: "Crie um <strong>capítulo sobre obstáculos comuns na meditação</strong>: mente dispersa, sono durante a prática, impaciência, dúvida — com estratégias práticas para cada desafio e normalização do processo." }
+    ]
+  },
+  {
+    id: "nicho",
+    category: "Prompts para Nicho",
+    icon: "🎯",
+    color: "#5baee8",
+    bg: "rgba(91,174,232,0.12)",
+    prompts: [
+      { text: "Analise o nicho de <strong>[insira seu nicho]</strong> e identifique os 5 maiores problemas que o público-alvo enfrenta, os desejos mais profundos que têm e as objeções que impediriam a compra de um e-book." },
+      { text: "Crie um <strong>avatar de cliente ideal</strong> para o nicho de [nicho], com nome fictício, idade, profissão, renda, dores emocionais, objetivos, plataformas que usa e linguagem que ressoa com ele." },
+      { text: "Desenvolva <strong>10 títulos magnéticos</strong> para um e-book no nicho de [nicho], usando gatilhos de curiosidade, urgência e benefício claro, com subtítulos explicativos." },
+      { text: "Mapeie a <strong>jornada de transformação</strong> do leitor ideal do nicho [nicho]: antes (situação atual, frustrações), durante (insights do e-book) e depois (resultado transformador prometido)." },
+      { text: "Crie uma <strong>pesquisa de validação</strong> com 10 perguntas estratégicas para descobrir se o público-alvo do nicho [nicho] pagaria por um e-book e quanto investiria." },
+      { text: "Escreva a <strong>proposta de valor única</strong> do e-book para [nicho], diferenciando-o dos concorrentes gratuitos e explicando por que este conteúdo vale o investimento." },
+      { text: "Identifique os <strong>principais concorrentes</strong> no nicho [nicho] no digital, analise seus pontos fracos e crie uma estratégia de posicionamento diferenciado para o meu e-book." },
+      { text: "Crie um <strong>mapa de conteúdo completo</strong> para um e-book de [nicho] com 8 capítulos, cada um resolvendo uma dor específica do avatar, com títulos, subtemas e call-to-actions." },
+      { text: "Escreva <strong>5 variações de promessas</strong> para a capa do e-book de [nicho], testando abordagens de transformação rápida, segredo revelado, método comprovado e guia definitivo." },
+      { text: "Desenvolva uma <strong>estratégia de lançamento</strong> do e-book para o nicho [nicho] em 30 dias, com cronograma de aquecimento, lista de espera, depoimentos e oferta de lançamento." },
+      { text: "Crie uma <strong>análise de tendências de 2026</strong> para o nicho [nicho]: o que está crescendo, o que está morrendo, oportunidades inexploradas e como posicionar o e-book como solução do futuro." },
+      { text: "Escreva <strong>3 estudos de caso fictícios</strong> de pessoas que aplicaram os ensinamentos do e-book no nicho [nicho], com dados específicos de transformação, obstáculos e resultados mensuráveis." },
+      { text: "Desenvolva uma <strong>estratégia de precificação</strong> para o e-book de [nicho]: análise de faixas de preço do mercado, psicologia de preços, teste A/B de valores e quando oferecer desconto sem desvalorizar." },
+      { text: "Crie um <strong>roteiro de vídeo de apresentação</strong> de 2 minutos para o e-book de [nicho], focado em YouTube e Reels, com gancho, problema, solução, prova e chamada para ação." },
+      { text: "Escreva um <strong>capítulo de bônus exclusivo</strong> para o e-book de [nicho] que aumente a percepção de valor: templates, checklists, planilhas ou recursos adicionais que o leitor pode usar imediatamente." },
+      { text: "Desenvolva uma <strong>estratégia de SEO orgânico</strong> para promover o e-book de [nicho]: 20 palavras-chave de cauda longa, estrutura de artigos de blog, e como usar o conteúdo gratuito para vender o pago." },
+      { text: "Crie um <strong>programa de afiliados</strong> para o e-book de [nicho]: estrutura de comissões, materiais de divulgação, como recrutar afiliados e um email de boas-vindas para novos parceiros." },
+      { text: "Escreva <strong>depoimentos modelo</strong> para o e-book de [nicho] — 5 exemplos de avaliações poderosas com detalhes específicos, resultados mensuráveis e histórias de transformação que geram credibilidade." },
+      { text: "Desenvolva uma <strong>estratégia de upsell pós-compra</strong> para o e-book de [nicho]: sequência de e-mails de entrega, oferta de mentoria, curso ou produto complementar no prazo de 7 dias após a compra." },
+      { text: "Crie um <strong>guia de design de capa</strong> para o e-book de [nicho]: paleta de cores que converte, tipografia profissional, elementos visuais do nicho, mockup 3D e como criar sem designer usando Canva ou Figma." }
+    ]
+  },
+  {
+    id: "afirmacoes",
+    category: "Afirmações Positivas",
+    icon: "✨",
+    color: "#e8c45b",
+    bg: "rgba(232,196,91,0.12)",
+    prompts: [
+      { text: "Crie <strong>50 afirmações poderosas</strong> para abundância financeira, organizadas em 5 temas: mentalidade de prosperidade, merecimento, oportunidades, gratidão e ação corajosa." },
+      { text: "Desenvolva um <strong>programa de afirmações matinais</strong> de 21 dias com uma afirmação central por dia, ritual de 5 minutos e exercício de ancoragem para fixar o estado mental positivo." },
+      { text: "Escreva <strong>30 afirmações para autoestima</strong> feminina, usando linguagem empoderada e inclusiva, com variações para mulheres que lutam com imagem corporal, relacionamentos e carreira." },
+      { text: "Crie <strong>afirmações terapêuticas</strong> para reprogramar crenças limitantes específicas: 'não sou suficiente', 'não mereço sucesso', 'relacionamentos machucam', com contra-afirmação para cada crença." },
+      { text: "Desenvolva um <strong>e-book de afirmações para crianças</strong> com 40 afirmações por faixa etária (3-6, 7-10, 11-14 anos), com ilustrações descritas e rituais lúdicos de repetição." },
+      { text: "Crie <strong>afirmações para atletas</strong> e pessoas em busca de performance física: foco, disciplina, superação de limites, recuperação de lesões e celebração de conquistas." },
+      { text: "Escreva um capítulo explicando a <strong>neurociência das afirmações</strong>: como a repetição muda os circuitos neurais, diferença entre afirmações eficazes e ineficazes, e técnica de prova emocional." },
+      { text: "Desenvolva <strong>afirmações de gratidão</strong> para 30 dias, com uma prática de journaling integrada, perguntas reflexivas e espaço para anotações pessoais em cada página." },
+      { text: "Crie <strong>afirmações para empresários e empreendedores</strong>: liderança, decisão, resiliência após falhas, visão de longo prazo e equilíbrio entre negócios e vida pessoal." },
+      { text: "Escreva <strong>afirmações de cura e saúde</strong> integrando crenças positivas sobre o corpo, sistema imunológico, energia vital e processo de envelhecimento saudável." },
+      { text: "Crie <strong>40 afirmações para superar o medo do fracasso</strong>: validando a tentativa, resignificando erros como aprendizado e construindo progressivamente a tolerância ao risco e à incerteza." },
+      { text: "Desenvolva um <strong>capítulo sobre afirmações em diferentes idiomas</strong>: por que afirmar em inglês, francês ou outro idioma pode ser mais eficaz para algumas pessoas e como usar afirmações bilíngues." },
+      { text: "Escreva <strong>afirmações específicas para cada signo do zodíaco</strong>: 5 afirmações poderosas alinhadas com as características, desafios e potenciais de cada signo, com ritual sugerido." },
+      { text: "Crie um <strong>diário de afirmações de 90 dias</strong> com estrutura diária: afirmação do dia, espaço para 3 evidências que a comprovam, reflexão noturna e nível de crença de 0 a 10." },
+      { text: "Desenvolva <strong>afirmações para pais e mães</strong>: paciência na criação dos filhos, equilíbrio entre família e carreira, valorização do papel de cuidador e autocuidado sem culpa." },
+      { text: "Escreva <strong>afirmações de relacionamento saudável</strong>: amor próprio como base, comunicação não-violenta, limites saudáveis, superação de relacionamentos tóxicos e abertura para o amor verdadeiro." },
+      { text: "Crie um capítulo sobre <strong>como criar suas próprias afirmações</strong>: 7 regras de ouro (tempo presente, positivo, específico, emocional, acreditável, pessoal e repetível) com exercícios práticos." },
+      { text: "Desenvolva <strong>afirmações visuais e mantras</strong>: diferença entre afirmação verbal, visual e escrita, como criar um vision board de afirmações, uso de post-its estratégicos e wallpapers motivacionais." },
+      { text: "Escreva <strong>afirmações para transições de vida</strong>: mudança de emprego, término de relacionamento, luto, aposentadoria, maternidade — com afirmações específicas para cada fase de recomeço." },
+      { text: "Crie um <strong>teste de crenças limitantes</strong> com 20 perguntas diagnósticas para o leitor descobrir quais áreas da vida mais precisam de reprogramação, com sugestões de afirmações personalizadas para cada resultado." }
+    ]
+  },
+  {
+    id: "vendas",
+    category: "Script de Vendas",
+    icon: "💰",
+    color: "#e8736a",
+    bg: "rgba(232,115,106,0.12)",
+    prompts: [
+      { text: "Escreva um <strong>script completo de VSL</strong> (Video Sales Letter) de 15 minutos para vender um e-book de [tema], com gancho irresistível, história de origem, apresentação do problema, solução e CTA urgente." },
+      { text: "Crie uma <strong>sequência de e-mails de lançamento</strong> de 7 dias para e-book: abertura de lista, identificação de dor, estudo de caso, quebra de objeções, urgência com bônus, prova social e último chamado." },
+      { text: "Desenvolva uma <strong>página de vendas persuasiva</strong> com headline poderosa, subheadline, bullets de benefícios, sobre o autor, depoimentos, detalhamento do conteúdo, garantia e oferta irresistível." },
+      { text: "Escreva <strong>10 títulos de e-mail</strong> com taxa de abertura alta para campanha de venda de e-book, usando curiosidade, benefício específico, pergunta provocativa e senso de urgência." },
+      { text: "Crie um <strong>script de DM no Instagram</strong> para converter seguidores em compradores do e-book, em 5 mensagens progressivas que educam, criam desejo e fecham a venda naturalmente." },
+      { text: "Desenvolva um <strong>roteiro de lives de vendas</strong> de 45 minutos: aquecimento de audiência, entrega de valor gratuito, transição para oferta, apresentação do e-book e Q&A de vendas." },
+      { text: "Escreva <strong>scripts de stories</strong> para sequência de 7 dias vendendo um e-book: teasers, bastidores, depoimentos, quebra de objeções, revelação de conteúdo e abertura do carrinho." },
+      { text: "Crie um <strong>upsell e order bump</strong> para maximizar o ticket médio na venda do e-book: descrição do produto complementar, benefícios adicionais e gatilhos para aceitar a oferta na hora da compra." },
+      { text: "Desenvolva um <strong>script de webinário</strong> de 60 minutos que ensina, gera desejo e converte para compra do e-book, com técnica de pirâmide de valor e fechamento suave." },
+      { text: "Escreva <strong>respostas para as 10 objeções mais comuns</strong> na venda de e-books: 'é caro', 'não tenho tempo', 'já vi de graça', 'não sei se funciona', 'vou deixar para depois', entre outras." },
+      { text: "Crie uma <strong>sequência de e-mails de abandono de carrinho</strong> de 3 mensagens: lembrete empático, benefício reforçado com bônus surpresa e última chance com escassez real de vagas ou tempo." },
+      { text: "Escreva um <strong>script de pitch para grupos do WhatsApp</strong>: apresentação do e-book em menos de 200 palavras que gera curiosidade, não parece spam e inclui convite natural para conhecer mais." },
+      { text: "Desenvolva uma <strong>estratégia de storytelling</strong> para vender o e-book: estrutura de história de origem do criador, jornada do herói aplicada ao cliente e como usar narrativa emocional nos posts." },
+      { text: "Crie um <strong>script de atendimento via chat</strong> para transformar dúvidas em vendas: como responder perguntas sobre o e-book, tratar indecisão, oferecer garantia e fechar com confiança." },
+      { text: "Escreva um <strong>copy para anúncio no Facebook/Instagram</strong> do e-book em 3 variações: formato curto (3 linhas), médio (8 linhas) e longo (storytelling de 20 linhas), cada um com CTA diferente." },
+      { text: "Desenvolva um <strong>email de reengajamento</strong> para leads frios que não compraram na última campanha: reativação com nova perspectiva do problema, atualização de conteúdo do e-book e oferta exclusiva." },
+      { text: "Crie um <strong>script de vendas por telefone/vídeo chamada</strong> para e-books de ticket mais alto (+R$200): qualificação do lead, apresentação da transformação, tour pelo conteúdo e fechamento consultivo." },
+      { text: "Escreva um <strong>capítulo de quebra de objeções dentro do próprio e-book</strong>: seção estratégica que antecipa as dúvidas do leitor sobre implementar o conteúdo e oferece soluções antes que ele abandone." },
+      { text: "Desenvolva um <strong>programa de indicação</strong> para e-book digital: estrutura de recompensas para quem indica, email para pedir indicações de forma não invasiva e página de agradecimento que converte." },
+      { text: "Crie um <strong>copy completo para página de obrigado</strong> pós-compra: confirmação entusiástica, próximos passos, oferta de upsell imediata, convite para comunidade e como extrair o máximo do e-book." }
+    ]
+  },
+  {
+    id: "dropshipping",
+    category: "Guia de Dropshipping",
+    icon: "📦",
+    color: "#5bc4a0",
+    bg: "rgba(91,196,160,0.12)",
+    prompts: [
+      { text: "Escreva o <strong>capítulo introdutório</strong> de um guia de dropshipping para iniciantes: o que é, como funciona o modelo de negócio, diferenças do e-commerce tradicional e mitos que precisam ser desmistificados." },
+      { text: "Crie um <strong>passo a passo completo</strong> para encontrar produtos vencedores no dropshipping: critérios de seleção, ferramentas (Minea, AdSpy, SaturationInspector) e como validar antes de investir." },
+      { text: "Desenvolva um capítulo sobre <strong>como encontrar fornecedores confiáveis</strong>: diferença AliExpress vs Shopify vs agentes privados, critérios de avaliação e como negociar melhores preços." },
+      { text: "Escreva uma <strong>guia de tráfego pago para dropshipping</strong>: estrutura de campanhas no Meta Ads, orçamento inicial recomendado, KPIs essenciais e como escalar um produto vencedor." },
+      { text: "Crie um capítulo de <strong>atendimento ao cliente</strong> em dropshipping: como gerenciar reclamações, prazos de entrega longos, reembolsos, chargebacks e como transformar clientes insatisfeitos em fiéis." },
+      { text: "Desenvolva um <strong>checklist de loja Shopify</strong> para dropshipping: configurações essenciais, apps obrigatórios, otimização de checkout, página de produto persuasiva e velocidade de carregamento." },
+      { text: "Escreva sobre <strong>aspectos legais e fiscais</strong> do dropshipping no Brasil: CNPJ, Simples Nacional, importação, nota fiscal e como operar de forma segura e dentro da lei." },
+      { text: "Crie um capítulo de <strong>copy e criativos</strong> para produtos de dropshipping: como escrever descrições que vendem, criar anúncios em vídeo, estrutura de UGC e testes A/B de criativos." },
+      { text: "Desenvolva uma seção de <strong>erros fatais dos iniciantes</strong> em dropshipping e como evitá-los: produto errado, nicho amplo demais, sem funil, abandono prematuro, ignorar métricas." },
+      { text: "Escreva um <strong>plano de negócios simplificado</strong> para dropshipping: projeção de custos iniciais, margem de lucro realista, meta de faturamento por fase e cronograma de 90 dias para primeiras vendas." },
+      { text: "Crie um capítulo sobre <strong>dropshipping nacional vs internacional</strong>: vantagens de fornecedores brasileiros (Dropi, Ideris, Bravo), prazo de entrega, custo logístico e quando cada modalidade é mais vantajosa." },
+      { text: "Desenvolva um guia de <strong>nicho e produto para dropshipping em 2026</strong>: os 10 nichos mais lucrativos, como analisar tendências no Google Trends, TikTok e Pinterest, e como evitar produtos saturados." },
+      { text: "Escreva um capítulo sobre <strong>funil de vendas completo</strong> para dropshipping: topo (awareness), meio (consideração) e fundo (conversão) com exemplos de anúncios e conteúdo para cada etapa." },
+      { text: "Crie uma seção sobre <strong>e-mail marketing para dropshipping</strong>: sequência de boas-vindas, recuperação de carrinho abandonado, pós-venda e como construir lista de compradores recorrentes." },
+      { text: "Desenvolva um capítulo de <strong>análise de métricas e otimização</strong>: CPM, CTR, CPC, ROAS, taxa de conversão — o que cada número significa, onde encontrar e como tomar decisões baseadas em dados." },
+      { text: "Escreva sobre <strong>como criar marca própria (white label)</strong> a partir do dropshipping: quando migrar para produto com marca, como encontrar fornecedores white label, embalagem personalizada e posicionamento premium." },
+      { text: "Crie um capítulo sobre <strong>TikTok para dropshipping</strong>: como o algoritmo funciona para e-commerce, TikTok Shop, estratégia de conteúdo orgânico + pago, e por que em 2026 é a maior oportunidade do mercado." },
+      { text: "Desenvolva uma seção sobre <strong>automações essenciais</strong> em dropshipping: apps para sincronização de estoque, processamento automático de pedidos, rastreamento e resposta automática de suporte." },
+      { text: "Escreva um capítulo de <strong>escala do negócio</strong>: quando e como escalar anúncios sem queimar o produto, estrutura de equipe para crescer, outsourcing de atendimento e operação para 6 dígitos mensais." },
+      { text: "Crie um <strong>glossário completo do dropshipping</strong> com 50 termos essenciais: ROAS, CVR, AOV, CPM, LTV, chargeback, fulfillment, pixel, lookalike — cada um explicado com exemplo prático de uso." }
+    ]
+  },
+  {
+    id: "produtividade",
+    category: "Gestão de Tempo e Produtividade",
+    icon: "⏰",
+    color: "#a0e87f",
+    bg: "rgba(160,232,127,0.12)",
+    prompts: [
+      { text: "Escreva um capítulo sobre o <strong>Método Time Blocking</strong>: como planejar a semana em blocos temáticos, diferença entre tarefas profundas e rasas, ferramentas digitais e físicas recomendadas." },
+      { text: "Crie um <strong>sistema de priorização</strong> combinando Matriz Eisenhower + Técnica 1-3-5: como aplicar diariamente, exemplos práticos e como lidar com urgências inesperadas sem perder o foco." },
+      { text: "Desenvolva um capítulo sobre <strong>como eliminar procrastinação</strong> com ciência comportamental: os 4 gatilhos neurológicos, técnica dos 2 minutos, regra da implementação de intenções e recompensas estratégicas." },
+      { text: "Escreva sobre <strong>rotinas de alta performance</strong>: estrutura de morning routine, ritual noturno, gestão de energia ao longo do dia e como adaptar rotinas para diferentes tipos de cronótipos." },
+      { text: "Crie um capítulo sobre <strong>gestão de e-mails, notificações e distrações digitais</strong>: técnica Inbox Zero, configuração de notificações, horários de verificação e ferramentas de foco como Freedom e Focusmate." },
+      { text: "Desenvolva uma seção sobre <strong>Técnica Pomodoro avançada</strong>: variações (52/17, 90 min de deep work), quando usar, como combinar com GTD (Getting Things Done) e tracking de produtividade." },
+      { text: "Escreva sobre <strong>delegação eficaz e automação</strong>: como identificar o que delegar, criar SOPs, ferramentas de automação (Zapier, Make) e como liberar horas para atividades de alto impacto." },
+      { text: "Crie um capítulo de <strong>planejamento semanal e revisão</strong>: template completo de planejamento dominical, perguntas de revisão sexta-feira, como ajustar metas e celebrar conquistas incrementais." },
+      { text: "Desenvolva uma seção sobre <strong>gestão de energia vs gestão de tempo</strong>: os 4 pilares (físico, emocional, mental, espiritual), como recarregar cada um e construir ritmos de alta performance sustentáveis." },
+      { text: "Escreva sobre <strong>ferramentas de produtividade</strong> para 2026: comparativo entre Notion, Obsidian, TickTick e Linear, com casos de uso específicos e como criar um sistema personalizado." },
+      { text: "Crie um capítulo sobre <strong>foco em ambiente de home office</strong>: como configurar o espaço físico ideal, separação psicológica trabalho/lazer, lidar com interrupções familiares e criar rituais de início/fim do expediente." },
+      { text: "Desenvolva um guia de <strong>metas SMART e OKRs pessoais</strong>: diferença entre objetivo e meta, como definir KRs mensuráveis, revisão trimestral e como alinhar metas pessoais com profissionais." },
+      { text: "Escreva sobre o <strong>método GTD (Getting Things Done)</strong> de David Allen: as 5 etapas (capturar, esclarecer, organizar, refletir e engajar), como implementar do zero e adaptar para a realidade brasileira." },
+      { text: "Crie um capítulo sobre <strong>produtividade criativa</strong>: diferença entre trabalho analítico e criativo, como criar condições para fluxo (flow state), quando forçar vs quando esperar a inspiração." },
+      { text: "Desenvolva uma seção sobre <strong>reuniões eficientes</strong>: como recusar reuniões desnecessárias diplomaticamente, estrutura de pauta, duração ideal, tomada de decisão e encerramento com ações claras." },
+      { text: "Escreva sobre <strong>leitura rápida e gestão de conhecimento</strong>: técnicas de leitura dinâmica, como tomar notas eficazes, sistema Zettelkasten, e como transformar o que você lê em ação concreta." },
+      { text: "Crie um capítulo de <strong>produtividade para multitarefas involuntários</strong>: pais, empreendedores solos e freelancers com múltiplos projetos — como organizar o caos sem enlouquecer usando batching e contextos." },
+      { text: "Desenvolva um guia de <strong>descanso estratégico</strong>: por que descansar mais aumenta a produtividade, tipos de descanso (físico, mental, criativo, social), técnica de power nap e como implementar." },
+      { text: "Escreva sobre <strong>produtividade digital minimalista</strong>: digital detox, como auditar seus apps e assinaturas, construir uma relação saudável com redes sociais e recuperar horas roubadas pela internet." },
+      { text: "Crie o capítulo final sobre <strong>construindo um sistema personalizado de produtividade</strong>: como integrar todas as técnicas do e-book, criar seu playbook único, medir resultados e evoluir o sistema continuamente." }
+    ]
+  },
+  {
+    id: "instagram",
+    category: "Marketing no Instagram 2026",
+    icon: "📱",
+    color: "#e87fd4",
+    bg: "rgba(232,127,212,0.12)",
+    prompts: [
+      { text: "Escreva um capítulo sobre o <strong>algoritmo do Instagram em 2026</strong>: como funciona a distribuição por tipo de conteúdo (Reels, Carrossel, Stories, Lives), sinais de ranqueamento e estratégias para aumentar alcance orgânico." },
+      { text: "Crie um <strong>guia de Reels virais</strong>: estrutura dos primeiros 3 segundos, técnica de looping, uso de áudio em alta, legendas otimizadas para acessibilidade e SEO visual no Instagram." },
+      { text: "Desenvolva uma <strong>estratégia de bio e perfil</strong> que converte seguidores em clientes: headline com proposta de valor, palavras-chave estratégicas, link na bio otimizado e foto/avatar profissional." },
+      { text: "Escreva sobre <strong>criação de conteúdo em série</strong> no Instagram: como criar séries de carrossel, mini-cursos em Stories e desafios de engajamento que aumentam saves e compartilhamentos." },
+      { text: "Crie um capítulo sobre <strong>Instagram Shopping e links de venda</strong>: configuração de loja, catálogo de produtos, tags em fotos e stories, checkout nativo e estratégias de social selling." },
+      { text: "Desenvolva uma <strong>estratégia de stories persuasivos</strong>: sequência de 10 stories que aquece, educa e converte, uso de enquetes, quizzes e caixas de perguntas para aumentar engajamento." },
+      { text: "Escreva sobre <strong>parcerias e co-criação</strong> no Instagram: como abordar influenciadores do seu nicho, estrutura de collabs, Lives conjuntas e como usar o recurso de post colaborativo para ampliar alcance." },
+      { text: "Crie um capítulo sobre <strong>Instagram Ads em 2026</strong>: objetivos de campanha corretos para cada etapa do funil, públicos de lookalike, retargeting avançado e como testar criativos com budget mínimo." },
+      { text: "Desenvolva uma <strong>estratégia de hashtags e SEO</strong> no Instagram: diferença entre hashtags de nicho, médias e amplas, pesquisa de palavra-chave na busca do Instagram e otimização de legendas." },
+      { text: "Escreva sobre <strong>análise de métricas e crescimento</strong>: KPIs essenciais (alcance, impressões, engajamento, salvamentos, cliques no link), como interpretar os dados do Instagram Insights e ajustar a estratégia." },
+      { text: "Crie um capítulo sobre <strong>calendário editorial no Instagram</strong>: como planejar 30 dias de conteúdo em 2 horas, distribuição de formatos por dia da semana, pilares de conteúdo e frequência ideal por nicho." },
+      { text: "Desenvolva um guia de <strong>copywriting para legendas</strong>: estrutura AIDA adaptada para Instagram, como escrever o gancho da primeira linha, técnica de cliffhanger para 'ver mais' e CTA que converte." },
+      { text: "Escreva sobre <strong>identidade visual no feed</strong>: como criar um feed coeso e profissional sem ser designer, paleta de cores, filtros consistentes, regra de grade e ferramentas como Canva e Unfold." },
+      { text: "Crie um capítulo sobre <strong>como monetizar um perfil pequeno</strong> (menos de 10 mil seguidores): estratégias de micro-influência, nichos hiperlocais, venda direta pelo direct e como criar produtos digitais a partir do seu conteúdo." },
+      { text: "Desenvolva uma seção sobre <strong>Instagram para negócios locais</strong>: geotags estratégicos, conteúdo de comunidade, parcerias com outros negócios locais, promoções exclusivas para seguidores e reviews em stories." },
+      { text: "Escreva sobre <strong>Lives estratégicas</strong> no Instagram: como preparar roteiro de live, aquecer audiência nas 48h antes, estrutura de abertura que retém, dinâmicas de engajamento e encerramento com CTA forte." },
+      { text: "Crie um capítulo sobre <strong>repurposing de conteúdo</strong>: como transformar 1 ideia em 10 formatos diferentes para Instagram (carrossel, reel, story, live, guia, highlight, legenda longa, pergunta, meme e bastidor)." },
+      { text: "Desenvolva uma estratégia de <strong>crescimento orgânico acelerado</strong>: método de engajamento nos primeiros 30 minutos após postagem, interação estratégica com perfis maiores e como usar comentários para ganhar alcance." },
+      { text: "Escreva sobre <strong>Instagram para lançamentos de produtos</strong>: linha do tempo de 4 semanas de aquecimento, série de conteúdos de bastidor, abertura do carrinho em stories e como criar FOMO genuíno." },
+      { text: "Crie um capítulo final com um <strong>plano de ação de 90 dias no Instagram</strong>: semana a semana, com metas de crescimento realistas, tipos de conteúdo por fase e como avaliar se a estratégia está funcionando." }
+    ]
+  },
+  {
+    id: "ia",
+    category: "Criação de Conteúdo com IA",
+    icon: "🤖",
+    color: "#c8a96e",
+    bg: "rgba(200,169,110,0.12)",
+    prompts: [
+      { text: "Escreva um capítulo introdutório sobre <strong>como usar IA para criar e-books</strong>: fluxo de trabalho completo do briefing à publicação, ferramentas mais indicadas em 2026 e como manter voz autoral única." },
+      { text: "Crie um guia de <strong>prompt engineering avançado</strong>: técnicas de Chain of Thought, few-shot prompting, definição de persona, instruções de formato e como refinar respostas para máxima qualidade." },
+      { text: "Desenvolva um capítulo sobre <strong>IA para criação de imagens</strong> para e-books: Midjourney vs DALL-E vs Stable Diffusion, prompts de imagem profissionais, licenciamento e consistência visual." },
+      { text: "Escreva sobre <strong>fluxo de trabalho com IA para conteúdo de redes sociais</strong>: geração em lote de legendas, calendário editorial automático, repurposing de um e-book em 30 tipos de conteúdo." },
+      { text: "Crie um guia de <strong>revisão e edição de conteúdo gerado por IA</strong>: como identificar textos genéricos, injetar personalidade, adicionar dados reais e tornar o conteúdo indetectável como IA-written." },
+      { text: "Desenvolva uma seção sobre <strong>ética e transparência no uso de IA</strong>: quando declarar uso de IA, direitos autorais de conteúdo gerado, LGPD, melhores práticas e tendências regulatórias." },
+      { text: "Escreva sobre <strong>ferramentas de IA essenciais</strong> para criadores de conteúdo em 2026: ChatGPT, Claude, Gemini, Perplexity, Jasper — comparativo de uso, preços e casos de uso específicos." },
+      { text: "Crie um capítulo sobre <strong>automação do processo de criação</strong>: como usar n8n ou Make para automatizar pesquisa, geração de rascunhos, revisão e publicação de e-books e conteúdo digital." },
+      { text: "Desenvolva um guia de <strong>SEO com IA</strong>: pesquisa de palavras-chave com IA, otimização de títulos e meta-descrições, geração de FAQ semântico e estratégia de conteúdo para ranqueamento." },
+      { text: "Escreva o capítulo final sobre <strong>monetização de conteúdo criado com IA</strong>: modelos de negócio (e-books, cursos, newsletters, agência de conteúdo), precificação e como escalar a produção mantendo qualidade." },
+      { text: "Crie um capítulo sobre <strong>como dar voz autoral ao conteúdo de IA</strong>: técnica de 'treinar' a IA com amostras do seu estilo, uso de memória em conversas longas, e checklist de personalização antes de publicar." },
+      { text: "Desenvolva um guia de <strong>criação de cursos com IA</strong>: como usar IA para estruturar módulos, criar slides, gerar scripts de vídeo, criar quizzes e materiais de apoio — do zero ao produto completo." },
+      { text: "Escreva sobre <strong>IA para pesquisa e fact-checking</strong>: como usar Perplexity e Claude para pesquisar fontes confiáveis, cruzar dados, verificar afirmações e criar conteúdo embasado e preciso." },
+      { text: "Crie um capítulo de <strong>prompts para diferentes tipos de escrita</strong>: prompts para narrativa, prompts para listas educativas, prompts para conteúdo emocional, técnico e comercial — com exemplos prontos." },
+      { text: "Desenvolva uma seção sobre <strong>IA para tradução e localização de e-books</strong>: como usar IA para traduzir, adaptar culturalmente e formatar e-books em outros idiomas, ampliando o mercado para além do Brasil." },
+      { text: "Escreva sobre <strong>construção de agente de IA pessoal</strong>: como criar um GPT personalizado ou usar o Projeto Claude para ter um assistente treinado no seu nicho, estilo e base de conhecimento exclusiva." },
+      { text: "Crie um capítulo sobre <strong>IA para análise de mercado e tendências</strong>: como usar IA para monitorar concorrentes, identificar lacunas de conteúdo, analisar comentários do público e encontrar ideias de e-books lucrativos." },
+      { text: "Desenvolva um guia de <strong>criação de newsletter com IA</strong>: estrutura de newsletter que converte, como usar IA para criar edições semanais, personalização por segmento de lista e estratégia de monetização." },
+      { text: "Escreva sobre <strong>IA para design de e-books</strong>: como usar Canva com IA, Adobe Firefly, Gamma e outras ferramentas para criar diagramação profissional, capas atraentes e infográficos sem ser designer." },
+      { text: "Crie um capítulo sobre <strong>criação de podcasts e audiobooks com IA</strong>: como transformar o e-book em áudio usando vozes sintéticas realistas, edição com IA, distribuição em plataformas e nova fonte de renda." }
+    ]
+  }
+];
+
+let currentFilter = 'todos';
+let expandedCards = {};
+
+function renderGrid(filteredData) {
+  const grid = document.getElementById('grid');
+  
+  if (filteredData.length === 0) {
+    grid.innerHTML = '<div class="no-results"><span>🔍</span>Nenhum prompt encontrado.<br>Tente outra palavra-chave.</div>';
+    return;
+  }
+
+  grid.innerHTML = filteredData.map((cat, idx) => {
+    const isExpanded = expandedCards[cat.id];
+    const visiblePrompts = isExpanded ? cat.prompts : cat.prompts.slice(0, 3);
+    
+    return `
+    <div class="card" data-category="${cat.id}" style="animation-delay:${idx * 0.06}s">
+      <div class="card-header">
+        <div class="card-icon" style="background:${cat.bg}; font-size:22px">${cat.icon}</div>
+        <div class="card-meta">
+          <div class="card-category" style="color:${cat.color}">${cat.category}</div>
+          <div class="card-title">${cat.category}</div>
+          <div class="card-count">${cat.prompts.length} prompts prontos para usar</div>
+        </div>
+      </div>
+      <div class="prompts-list">
+        ${visiblePrompts.map((p, i) => `
+          <div class="prompt-item" onclick="copyPrompt(this, ${idx}, ${i})">
+            <div class="prompt-text">${p.text}</div>
+            <button class="copy-btn" title="Copiar">📋</button>
+          </div>
+        `).join('')}
+      </div>
+      <div class="card-footer">
+        <button class="show-more" onclick="toggleExpand('${cat.id}')">
+          ${isExpanded ? '▲ Mostrar menos' : `▼ Ver mais ${cat.prompts.length - 3} prompts`}
+        </button>
+        <button class="copy-all" onclick="copyAll(${idx})">Copiar todos</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterAll();
+}
+
+function filterAll() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  
+  let filtered = data.filter(cat => {
+    if (currentFilter !== 'todos' && cat.id !== currentFilter) return false;
+    if (!search) return true;
+    return cat.prompts.some(p => p.text.toLowerCase().includes(search)) ||
+           cat.category.toLowerCase().includes(search);
+  });
+
+  if (search) {
+    filtered = filtered.map(cat => ({
+      ...cat,
+      prompts: cat.prompts.filter(p => p.text.toLowerCase().includes(search))
+    })).filter(cat => cat.prompts.length > 0);
+  }
+
+  renderGrid(filtered);
+}
+
+function toggleExpand(id) {
+  expandedCards[id] = !expandedCards[id];
+  filterAll();
+  setTimeout(() => {
+    document.querySelector(`[data-category="${id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
+}
+
+function stripHtml(html) {
+  return html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+}
+
+function copyPrompt(el, catIdx, promptIdx) {
+  const cat = data[catIdx];
+  const text = stripHtml(cat.prompts[promptIdx].text);
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = el.querySelector('.copy-btn');
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 2000);
+    showToast('Prompt copiado!');
+  });
+}
+
+function copyAll(catIdx) {
+  const cat = data[catIdx];
+  const text = cat.prompts.map((p, i) => `${i+1}. ${stripHtml(p.text)}`).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => showToast(`${cat.prompts.length} prompts copiados!`));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderGrid(data);
+</script>
+</body>
+</html>
