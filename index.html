@@ -4,824 +4,343 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biblioteca de Prompts Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
-    --border: rgba(255,255,255,0.07);
-    --text: #e8e6f0;
-    --muted: #7a7890;
-    --accent1: #c8a96e;
-    --accent2: #7c6af5;
-    --accent3: #e8736a;
-    --accent4: #5bc4a0;
-    --accent5: #e87fd4;
-    --accent6: #5baee8;
-    --accent7: #e8c45b;
-    --accent8: #a0e87f;
-    --accent9: #e88a5b;
-  }
+:root{
+  --bg:#07070f;--s1:#0d0d1a;--s2:#131320;--s3:#181830;
+  --bd:rgba(255,255,255,0.06);--bd2:rgba(255,255,255,0.11);
+  --tx:#dddaf0;--mu:#5c5975;--mu2:#9490a8;
+  --gold:#c8a55a;--green:#4ecb8d;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;opacity:.02;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none;z-index:0;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+header{position:relative;text-align:center;padding:90px 24px 70px;overflow:hidden;}
+header::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(200,165,90,.07) 0%,transparent 65%);pointer-events:none;}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);border:1px solid rgba(200,165,90,.22);padding:7px 20px;border-radius:2px;margin-bottom:28px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,6.5vw,82px);font-weight:700;line-height:1.03;letter-spacing:-2px;margin-bottom:14px;}
+h1 em{font-style:italic;color:var(--gold);}
+.desc{color:var(--mu2);font-size:15px;line-height:1.85;max-width:520px;margin:0 auto 16px;font-weight:400;}
+.pill{display:inline-flex;align-items:center;gap:7px;background:rgba(78,203,141,.07);border:1px solid rgba(78,203,141,.18);color:var(--green);font-size:11px;padding:5px 16px;border-radius:20px;margin-bottom:44px;font-family:'JetBrains Mono',monospace;}
+.stats{display:flex;justify-content:center;gap:52px;flex-wrap:wrap;}
+.stat .n{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:700;color:var(--gold);line-height:1;}
+.stat .l{font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px;font-family:'JetBrains Mono',monospace;}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* GUIA */
+.gw{padding:0 24px 28px;max-width:1280px;margin:0 auto;}
+.gb{background:var(--s1);border:1px solid rgba(200,165,90,.2);border-radius:14px;overflow:hidden;}
+.gh{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;transition:background .2s;}
+.gh:hover{background:var(--s2);}
+.ghl{display:flex;align-items:center;gap:12px;}
+.ght{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--gold);}
+.ghs{font-size:11px;color:var(--mu2);margin-top:1px;font-family:'JetBrains Mono',monospace;}
+.garr{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:13px;transition:transform .3s;}
+.gbody{display:none;padding:0 22px 22px;border-top:1px solid rgba(200,165,90,.12);}
+.gbody.open{display:block;}
+.ugrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px;}
+.uc{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:18px;}
+.uc--wide{grid-column:1/-1;}
+.un{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:7px;text-transform:uppercase;}
+.ut{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--tx);margin-bottom:7px;}
+.ud{font-size:12px;color:var(--mu2);line-height:1.65;margin-bottom:10px;}
+.ucode{background:var(--s3);border:1px solid var(--bd);border-radius:7px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#a8d8c0;white-space:pre-wrap;line-height:1.65;margin-bottom:10px;}
+.uex{font-size:11px;color:var(--mu2);padding:3px 7px;background:rgba(255,255,255,.03);border-radius:4px;margin-top:3px;}
+.uex-t{font-size:10px;font-weight:700;color:var(--mu2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;font-family:'JetBrains Mono',monospace;}
+.cpytmpl{background:rgba(200,165,90,.1);border:1px solid rgba(200,165,90,.3);color:var(--gold);padding:8px 16px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;margin-top:6px;}
+.cpytmpl:hover{background:rgba(200,165,90,.2);}
 
-  /* Noise texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-  }
+/* SEARCH */
+.sw{padding:0 24px 30px;max-width:620px;margin:0 auto;}
+.sb{position:relative;}
+.sb input{width:100%;background:var(--s1);border:1px solid var(--bd2);border-radius:10px;padding:14px 20px 14px 50px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.sb input:focus{border-color:rgba(200,165,90,.4);box-shadow:0 0 0 3px rgba(200,165,90,.06);}
+.sb input::placeholder{color:var(--mu);}
+.si{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:15px;pointer-events:none;}
 
-  /* Header */
-  header {
-    position: relative;
-    text-align: center;
-    padding: 80px 20px 60px;
-    overflow: hidden;
-  }
+/* FILTERS */
+.filters{display:flex;gap:7px;overflow-x:auto;padding:0 24px 34px;max-width:1280px;margin:0 auto;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.fb{flex-shrink:0;background:var(--s1);border:1px solid var(--bd);color:var(--mu2);padding:8px 18px;border-radius:100px;font-size:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;font-weight:600;}
+.fb:hover{border-color:var(--bd2);color:var(--tx);}
+.fb.on{background:var(--gold);border-color:var(--gold);color:#07070f;font-weight:700;}
 
-  header::before {
-    content: '';
-    position: absolute;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 400px;
-    background: radial-gradient(ellipse, rgba(200,169,110,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:20px;padding:0 24px 100px;max-width:1280px;margin:0 auto;}
 
-  .badge {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent1);
-    border: 1px solid rgba(200,169,110,0.3);
-    padding: 6px 16px;
-    border-radius: 2px;
-    margin-bottom: 24px;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(42px, 7vw, 80px);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -1px;
-    margin-bottom: 20px;
-  }
-
-  h1 em {
-    font-style: italic;
-    color: var(--accent1);
-  }
-
-  .subtitle {
-    color: var(--muted);
-    font-size: 16px;
-    max-width: 500px;
-    margin: 0 auto 40px;
-    line-height: 1.7;
-  }
-
-  .stats-row {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    text-align: center;
-  }
-
-  .stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--accent1);
-  }
-
-  .stat-label {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* Search */
-  .search-wrap {
-    padding: 0 20px 40px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .search-box {
-    position: relative;
-  }
-
-  .search-box input {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 20px 14px 48px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .search-box input:focus { border-color: rgba(200,169,110,0.4); }
-  .search-box input::placeholder { color: var(--muted); }
-
-  .search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--muted);
-    font-size: 18px;
-  }
-
-  /* Filters */
-  .filters {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 0 20px 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-    scrollbar-width: none;
-  }
-
-  .filters::-webkit-scrollbar { display: none; }
-
-  .filter-btn {
-    flex-shrink: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 8px 18px;
-    border-radius: 100px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .filter-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
-  .filter-btn.active { background: var(--accent1); border-color: var(--accent1); color: #0a0a0f; font-weight: 600; }
-
-  /* Grid */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 20px;
-    padding: 0 20px 80px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* Cards */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s;
-    animation: fadeUp 0.5s ease both;
-  }
-
-  .card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255,255,255,0.12);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-header {
-    padding: 20px 20px 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .card-meta { flex: 1; }
-
-  .card-category {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--text);
-  }
-
-  .card-count {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-
-  .prompts-list {
-    padding: 16px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .prompt-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.2s;
-    group: true;
-  }
-
-  .prompt-item:hover {
-    border-color: rgba(255,255,255,0.12);
-    background: #20202e;
-  }
-
-  .prompt-text {
-    font-size: 13px;
-    line-height: 1.6;
-    color: #c4c2d4;
-    padding-right: 32px;
-  }
-
-  .prompt-text strong {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .copy-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: all 0.2s;
-    opacity: 0;
-  }
-
-  .prompt-item:hover .copy-btn { opacity: 1; }
-  .copy-btn:hover { color: var(--accent1); }
-
-  .copy-btn.copied { color: var(--accent4) !important; opacity: 1 !important; }
-
-  .card-footer {
-    padding: 12px 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .show-more {
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    font-size: 13px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: color 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .show-more:hover { color: var(--text); }
-
-  .copy-all {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    font-size: 12px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    padding: 5px 12px;
-    border-radius: 6px;
-    transition: all 0.2s;
-  }
-
-  .copy-all:hover { border-color: var(--accent1); color: var(--accent1); }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: var(--surface2);
-    border: 1px solid rgba(91,196,160,0.3);
-    color: var(--accent4);
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: 'DM Mono', monospace;
-    transform: translateY(20px);
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 100;
-  }
-
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* Hidden */
-  .hidden { display: none !important; }
-
-  .divider {
-    height: 1px;
-    background: var(--border);
-    max-width: 1200px;
-    margin: 0 auto 40px;
-  }
-
-  .section-label {
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 30px;
-    padding: 0 20px;
-  }
-
-  .no-results {
-    text-align: center;
-    color: var(--muted);
-    padding: 60px 20px;
-    grid-column: 1/-1;
-    font-size: 16px;
-  }
-
-  .no-results span { font-size: 40px; display: block; margin-bottom: 16px; }
-
-  @media (max-width: 768px) {
-    .grid { grid-template-columns: 1fr; }
-    .stats-row { gap: 24px; }
-  }
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;animation:up .45s ease both;}
+.card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.09);box-shadow:0 24px 60px rgba(0,0,0,.5);}
+@keyframes up{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+.ch{padding:20px 20px 16px;border-bottom:1px solid var(--bd);display:flex;gap:13px;align-items:flex-start;}
+.ci{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.cc{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;}
+.ct{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;line-height:1.2;color:var(--tx);}
+.cq{font-size:11px;color:var(--mu);margin-top:3px;font-family:'JetBrains Mono',monospace;}
+.pl{padding:14px 16px;display:flex;flex-direction:column;gap:9px;}
+.pi{background:var(--s2);border:1px solid var(--bd);border-radius:9px;overflow:hidden;transition:border-color .2s;}
+.pi:hover{border-color:var(--bd2);}
+.ph{display:flex;align-items:center;justify-content:space-between;padding:12px 13px 10px;cursor:pointer;gap:10px;}
+.plb{font-size:12.5px;font-weight:700;color:var(--tx);line-height:1.4;font-family:'Syne',sans-serif;}
+.pa{display:flex;gap:3px;flex-shrink:0;}
+.eb,.cb{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:3px 8px;border-radius:5px;transition:all .2s;font-family:'JetBrains Mono',monospace;}
+.eb:hover{color:var(--gold);background:rgba(200,165,90,.08);}
+.cb:hover{color:var(--green);background:rgba(78,203,141,.08);}
+.cb.ok{color:var(--green);}
+.pb{padding:0 13px 13px;display:none;}
+.pb.open{display:block;}
+.pf{background:var(--s3);border:1px solid var(--bd);border-radius:7px;padding:14px 16px;font-size:12px;line-height:1.82;color:#b5b2cc;font-family:'JetBrains Mono',monospace;white-space:pre-wrap;word-break:break-word;max-height:500px;overflow-y:auto;}
+.pf::-webkit-scrollbar{width:3px;}
+.pf::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
+.cf{padding:13px 16px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.smb{background:transparent;border:none;color:var(--mu2);font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;transition:color .2s;}
+.smb:hover{color:var(--tx);}
+.cab{background:transparent;border:1px solid var(--bd2);color:var(--mu2);font-size:11px;cursor:pointer;font-family:'JetBrains Mono',monospace;padding:5px 13px;border-radius:6px;transition:all .2s;}
+.cab:hover{border-color:var(--gold);color:var(--gold);}
+.toast{position:fixed;bottom:26px;right:26px;background:var(--s2);border:1px solid rgba(78,203,141,.3);color:var(--green);padding:11px 20px;border-radius:9px;font-size:12px;font-family:'JetBrains Mono',monospace;transform:translateY(14px);opacity:0;transition:all .3s;z-index:999;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.nr{text-align:center;color:var(--mu);padding:80px 20px;grid-column:1/-1;font-size:15px;}
+.nr span{font-size:42px;display:block;margin-bottom:14px;}
+@media(max-width:860px){.grid{grid-template-columns:1fr;}.stats{gap:26px;}.ugrid{grid-template-columns:1fr;}.uc--wide{grid-column:1;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="badge">✦ Biblioteca Premium de Prompts</div>
-  <h1>Prompts para<br><em>E-books</em> de Sucesso</h1>
-  <p class="subtitle">Coleção curada de prompts profissionais para criar e-books que vendem em todos os nichos mais lucrativos.</p>
-  <div class="stats-row">
-    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Categorias</div></div>
-    <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Prompts</div></div>
-    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Prontos para Usar</div></div>
+  <div class="kicker">✦ Biblioteca Premium 2026</div>
+  <h1>Prompts <em>Completos</em><br>Anti-Alucinação</h1>
+  <p class="desc">Prompts estruturados com papel, contexto, instruções anti-alucinação, variação de cenário e campos de público-alvo — para e-books prontos, sem invenções.</p>
+  <div class="pill">✓ Campos de personalização embutidos em cada prompt</div>
+  <div class="stats">
+    <div class="stat"><div class="n">9</div><div class="l">Categorias</div></div>
+    <div class="stat"><div class="n">45</div><div class="l">Prompts Completos</div></div>
+    <div class="stat"><div class="n">∞</div><div class="l">E-books Gerados</div></div>
   </div>
 </header>
 
-<div class="search-wrap">
-  <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Buscar prompts por palavra-chave..." oninput="filterAll()">
+<div class="gw">
+  <div class="gb">
+    <div class="gh" onclick="tg()">
+      <div class="ghl">
+        <span style="font-size:20px">⚙️</span>
+        <div>
+          <div class="ght">Como Turbinar Qualquer Prompt</div>
+          <div class="ghs">2 upgrades que eliminam respostas genéricas — clique para expandir</div>
+        </div>
+      </div>
+      <span class="garr" id="garr">▼</span>
+    </div>
+    <div class="gbody" id="gbody">
+      <div class="ugrid">
+        <div class="uc">
+          <div class="un">Upgrade 01</div>
+          <div class="ut">Especifique o Público-Alvo</div>
+          <div class="ud">Todo prompt com "público geral" produz conteúdo genérico. Adicione este bloco no início de qualquer prompt:</div>
+          <div class="ucode">PÚBLICO-ALVO: [seja específico]
+FAIXA ETÁRIA: [ex: 28–42 anos]
+CONTEXTO DE VIDA: [ex: mães que trabalham, executivos de TI]
+DOR PRINCIPAL: [ex: ansiedade pós-trabalho]
+NÍVEL COM O TEMA: [nunca tentou / já desistiu / intermediário]</div>
+          <div class="uex-t">Exemplos por nicho:</div>
+          <div class="uex">🍽️ Receitas → "mães com menos de 30 min por refeição"</div>
+          <div class="uex">🧘 Meditação → "executivas com ansiedade pós-reuniões"</div>
+          <div class="uex">💰 Vendas → "freelancers que nunca venderam por DM"</div>
+          <div class="uex">📦 Dropshipping → "universitários com R$500 de capital"</div>
+          <div class="uex">📱 Instagram → "negócios locais com menos de 200 seguidores"</div>
+        </div>
+        <div class="uc">
+          <div class="un">Upgrade 02</div>
+          <div class="ut">Exija Variação de Cenário</div>
+          <div class="ud">Sem instrução, a IA repete os mesmos cenários (praia, floresta, café). Para forçar variedade, adicione:</div>
+          <div class="ucode">VARIAÇÃO OBRIGATÓRIA:
+- NÃO repita clichês como [ex: praia/floresta]
+- Gere 3 VERSÕES DISTINTAS:
+  A: [contexto urbano/profissional]
+  B: [cotidiano doméstico/familiar]
+  C: [abstrato/simbólico/emocional]
+- Cada versão: ative 3+ sentidos diferentes</div>
+          <div class="uex-t">Aplicações práticas:</div>
+          <div class="uex">🧘 Meditação → não só praia: biblioteca com chuva, bolha de luz, quarto de infância</div>
+          <div class="uex">✨ Afirmações → não só "abundância": relacional, criativa, saúde</div>
+          <div class="uex">🍽️ Receitas → não só família: jantar a dois, almoço solo, reunião de amigos</div>
+          <div class="uex">💰 Vendas → não só "dor genérica": 3 situações concretas do avatar</div>
+        </div>
+        <div class="uc uc--wide">
+          <div class="un">Template Universal</div>
+          <div class="ut">Cole no início de qualquer prompt para personalizar completamente</div>
+          <div class="ucode" id="tmpl">PUBLICO-ALVO: [quem vai ler — seja especifico]
+FAIXA ETARIA: [ex: 30-45 anos]
+CONTEXTO/PROFISSAO: [ex: empreendedoras digitais, enfermeiras]
+PRINCIPAL DOR: [o que tira o sono desse publico]
+TOM DESEJADO: [tecnico e objetivo / acolhedor / inspirador / direto]
+NIVEL DE CONHECIMENTO: [iniciante / intermediario / avancado]
+
+INSTRUCAO DE VARIACAO:
+- Gere [numero] versoes distintas de qualquer cenario ou exemplo
+- NAO repita: [liste os cliches do nicho que quer evitar]
+- Para cada variacao: ative pelo menos 3 sentidos (visual, auditivo, emocional)</div>
+          <button class="cpytmpl" onclick="cpTmpl()">📋 Copiar Template Universal</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="filters" id="filters">
-  <button class="filter-btn active" onclick="setFilter('todos', this)">Todos</button>
-  <button class="filter-btn" onclick="setFilter('receitas', this)">🍽️ Receitas</button>
-  <button class="filter-btn" onclick="setFilter('meditacao', this)">🧘 Meditação</button>
-  <button class="filter-btn" onclick="setFilter('nicho', this)">🎯 Nicho</button>
-  <button class="filter-btn" onclick="setFilter('afirmacoes', this)">✨ Afirmações</button>
-  <button class="filter-btn" onclick="setFilter('vendas', this)">💰 Vendas</button>
-  <button class="filter-btn" onclick="setFilter('dropshipping', this)">📦 Dropshipping</button>
-  <button class="filter-btn" onclick="setFilter('produtividade', this)">⏰ Produtividade</button>
-  <button class="filter-btn" onclick="setFilter('instagram', this)">📱 Instagram</button>
-  <button class="filter-btn" onclick="setFilter('ia', this)">🤖 Conteúdo IA</button>
+<div class="sw"><div class="sb">
+  <span class="si">🔍</span>
+  <input type="text" id="q" placeholder="Buscar por tema, técnica, nicho..." oninput="ren()">
+</div></div>
+
+<div class="filters">
+  <button class="fb on" onclick="setF('todos',this)">✦ Todos</button>
+  <button class="fb" onclick="setF('receitas',this)">🍽️ Receitas</button>
+  <button class="fb" onclick="setF('meditacao',this)">🧘 Meditação</button>
+  <button class="fb" onclick="setF('nicho',this)">🎯 Nicho</button>
+  <button class="fb" onclick="setF('afirmacoes',this)">✨ Afirmações</button>
+  <button class="fb" onclick="setF('vendas',this)">💰 Vendas</button>
+  <button class="fb" onclick="setF('drop',this)">📦 Dropshipping</button>
+  <button class="fb" onclick="setF('prod',this)">⏰ Produtividade</button>
+  <button class="fb" onclick="setF('insta',this)">📱 Instagram</button>
+  <button class="fb" onclick="setF('ia',this)">🤖 IA</button>
 </div>
 
 <div class="grid" id="grid"></div>
-
-<div class="toast" id="toast">✓ Copiado para a área de transferência</div>
+<div class="toast" id="toast"></div>
 
 <script>
-const data = [
-  {
-    id: "receitas",
-    category: "E-book de Receitas",
-    icon: "🍽️",
-    color: "#e87f5b",
-    bg: "rgba(232,127,91,0.12)",
-    prompts: [
-      { text: "Crie um <strong>índice completo</strong> para um e-book de receitas fitness com 30 receitas low carb, organizadas por café da manhã, almoço, jantar e snacks. Inclua tempo de preparo e nível de dificuldade." },
-      { text: "Escreva uma <strong>introdução envolvente</strong> para um e-book de receitas italianas autênticas, contando a história da culinária italiana e por que essas receitas são especiais para reuniões em família." },
-      { text: "Desenvolva uma <strong>ficha técnica completa</strong> para a receita de bolo de chocolate sem glúten: ingredientes com medidas precisas, modo de preparo passo a passo, dicas do chef, variações e informação nutricional." },
-      { text: "Crie <strong>10 dicas práticas de mise en place</strong> para iniciantes na cozinha, explicando cada uma de forma simples e como elas economizam tempo e evitam desperdício." },
-      { text: "Escreva um capítulo sobre <strong>substituições inteligentes</strong> em receitas para veganos, com tabela de substituição de ovos, laticínios e carnes por ingredientes plant-based." },
-      { text: "Crie uma <strong>lista de compras semanal</strong> para um plano de 7 dias baseado nas receitas do e-book, com quantidades exatas e custo estimado por porção." },
-      { text: "Desenvolva uma seção de <strong>erros comuns na cozinha</strong> e como evitá-los, com explicações científicas simples sobre por que cada erro acontece." },
-      { text: "Escreva a <strong>biografia da autora</strong> do e-book de receitas: chef apaixonada, mãe de 2 filhos, que transformou sua cozinha caseira em um negócio de sucesso — tom acolhedor e inspirador." },
-      { text: "Crie <strong>variações de dificuldade</strong> para cada receita: versão iniciante (15 min), versão intermediária (30 min) e versão gourmet (1 hora), explicando as diferenças técnicas." },
-      { text: "Escreva uma seção <strong>'Harmonizações e Apresentação'</strong> ensinando como empratar de forma instagramável em 5 passos simples, com exemplos de guarnições." },
-      { text: "Crie um capítulo completo sobre <strong>técnicas de conservação de alimentos</strong>: como congelar corretamente cada tipo de ingrediente, duração, embalagem ideal e como reutilizar sobras com novas receitas criativas." },
-      { text: "Escreva uma seção sobre <strong>culinária afetiva e memórias gustativas</strong>: como apresentar cada receita com uma história pessoal de 3 parágrafos que cria conexão emocional com o leitor antes do passo a passo." },
-      { text: "Desenvolva um <strong>glossário culinário</strong> com 40 termos técnicos explicados de forma simples para iniciantes: de 'al dente' a 'zeste', com dicas de como dominar cada técnica em casa." },
-      { text: "Crie um capítulo de <strong>receitas de emergência</strong>: 10 pratos deliciosos feitos em menos de 20 minutos com ingredientes básicos de despensa, perfeitos para dias corridos." },
-      { text: "Escreva um guia de <strong>temperos e especiarias do mundo</strong>: como usar açafrão, za'atar, sumac, harissa e outros ingredientes exóticos para transformar receitas simples em pratos sofisticados." },
-      { text: "Desenvolva um capítulo sobre <strong>planejamento de cardápio para festas</strong>: menu completo para 10, 20 e 50 pessoas, cronograma de preparo e dicas para servir de forma elegante sem stress." },
-      { text: "Crie uma seção de <strong>receitas econômicas gourmet</strong>: 8 pratos com menos de R$20 por porção que parecem de restaurante, com dicas de apresentação que enganam qualquer convidado." },
-      { text: "Escreva um capítulo sobre <strong>a ciência do sabor</strong>: como o equilíbrio entre doce, salgado, azedo, amargo e umami funciona e como ajustar qualquer receita que ficou sem graça usando essa fórmula." },
-      { text: "Desenvolva um <strong>calendário sazonal de ingredientes</strong>: mês a mês, quais frutas, legumes e proteínas estão no pico de sabor e nutrição no Brasil, com uma receita exclusiva para cada período." },
-      { text: "Crie um capítulo de <strong>drinks e sobremesas express</strong>: 10 receitas de bebidas artesanais e 10 sobremesas de 5 ingredientes para encerrar qualquer refeição de forma marcante e fácil." }
-    ]
-  },
-  {
-    id: "meditacao",
-    category: "Meditações Guiadas",
-    icon: "🧘",
-    color: "#7c6af5",
-    bg: "rgba(124,106,245,0.12)",
-    prompts: [
-      { text: "Escreva um <strong>script de meditação guiada</strong> de 10 minutos para reduzir a ansiedade antes de dormir, usando técnica de body scan progressivo, com linguagem suave e pausas indicadas." },
-      { text: "Crie uma <strong>meditação de visualização criativa</strong> de 15 minutos focada em abundância e prosperidade, com cenário detalhado de praia ao pôr do sol, ancoragem sensorial completa." },
-      { text: "Desenvolva um <strong>script de respiração 4-7-8</strong> para iniciantes, explicando a técnica, seus benefícios científicos e guiando a prática por 8 minutos com contagem." },
-      { text: "Escreva uma <strong>meditação de autocompaixão</strong> baseada em técnicas de mindfulness de 12 minutos, especialmente para pessoas que sofrem de autocrítica severa ou perfeccionismo." },
-      { text: "Crie uma <strong>meditação matinal energizante</strong> de 7 minutos para ativar o sistema nervoso parassimpático, com afirmações integradas e exercícios de intenção para o dia." },
-      { text: "Desenvolva um <strong>script de meditação para crianças</strong> de 5 a 10 anos, com história de uma borboleta mágica, linguagem lúdica e técnicas de atenção plena adaptadas." },
-      { text: "Escreva uma <strong>meditação de cura emocional</strong> de 20 minutos integrando técnicas de EFT (tapping) e visualização, para liberação de mágoas e ressentimentos do passado." },
-      { text: "Crie um <strong>programa de 30 dias de meditação</strong> para iniciantes com estrutura progressiva, incluindo temas semanais, duração crescente e exercícios complementares." },
-      { text: "Desenvolva uma <strong>meditação para foco e produtividade</strong> de 10 minutos, usando técnica Pomodoro mental, ideal para antes de sessões de trabalho intenso." },
-      { text: "Escreva uma <strong>introdução científica</strong> sobre os benefícios da meditação para o e-book, citando estudos de neurociência sobre neuroplasticidade, cortisol e bem-estar geral." },
-      { text: "Crie um <strong>script de meditação de gratidão</strong> de 8 minutos com ancoragem corporal, técnica de escaneamento de memórias positivas e ritual de fechamento com intenção para o dia." },
-      { text: "Escreva uma <strong>meditação Yoga Nidra</strong> completa de 25 minutos — a 'soneca yóguica' — com rotação de consciência pelas 61 partes do corpo, visualização e estado hipnagógico guiado." },
-      { text: "Desenvolva um <strong>guia de meditação em movimento</strong>: técnicas de mindful walking, meditação em movimento consciente e como integrar atenção plena em atividades cotidianas como comer e lavar louça." },
-      { text: "Crie um <strong>script de meditação para luto e perda</strong> de 18 minutos com técnicas de Compassion Focused Therapy, reconhecimento das emoções sem julgamento e ancoragem no presente." },
-      { text: "Escreva uma <strong>meditação de chakras completa</strong> de 30 minutos, passando pelos 7 centros energéticos com visualização de cores, afirmações específicas e técnicas de respiração para cada chakra." },
-      { text: "Desenvolva um <strong>script de meditação para ansiedade social</strong> de 12 minutos, incluindo técnica de dessensibilização por imaginação, reprogramação de crenças sociais e âncora de segurança." },
-      { text: "Crie uma <strong>meditação de integração após o trabalho</strong> de 10 minutos para fazer a transição entre vida profissional e pessoal, com ritual de 'descompressão' e ativação do modo descanso." },
-      { text: "Escreva um <strong>guia de meditação com sons binaurais</strong>: o que são, frequências para cada objetivo (foco, relaxamento, criatividade, sono), como criar uma playlist e integrar ao e-book com QR codes." },
-      { text: "Desenvolva um <strong>script de meditação para dor crônica</strong> baseado em MBSR (Mindfulness-Based Stress Reduction), com técnicas validadas clinicamente para mudança de relação com o desconforto físico." },
-      { text: "Crie um <strong>capítulo sobre obstáculos comuns na meditação</strong>: mente dispersa, sono durante a prática, impaciência, dúvida — com estratégias práticas para cada desafio e normalização do processo." }
-    ]
-  },
-  {
-    id: "nicho",
-    category: "Prompts para Nicho",
-    icon: "🎯",
-    color: "#5baee8",
-    bg: "rgba(91,174,232,0.12)",
-    prompts: [
-      { text: "Analise o nicho de <strong>[insira seu nicho]</strong> e identifique os 5 maiores problemas que o público-alvo enfrenta, os desejos mais profundos que têm e as objeções que impediriam a compra de um e-book." },
-      { text: "Crie um <strong>avatar de cliente ideal</strong> para o nicho de [nicho], com nome fictício, idade, profissão, renda, dores emocionais, objetivos, plataformas que usa e linguagem que ressoa com ele." },
-      { text: "Desenvolva <strong>10 títulos magnéticos</strong> para um e-book no nicho de [nicho], usando gatilhos de curiosidade, urgência e benefício claro, com subtítulos explicativos." },
-      { text: "Mapeie a <strong>jornada de transformação</strong> do leitor ideal do nicho [nicho]: antes (situação atual, frustrações), durante (insights do e-book) e depois (resultado transformador prometido)." },
-      { text: "Crie uma <strong>pesquisa de validação</strong> com 10 perguntas estratégicas para descobrir se o público-alvo do nicho [nicho] pagaria por um e-book e quanto investiria." },
-      { text: "Escreva a <strong>proposta de valor única</strong> do e-book para [nicho], diferenciando-o dos concorrentes gratuitos e explicando por que este conteúdo vale o investimento." },
-      { text: "Identifique os <strong>principais concorrentes</strong> no nicho [nicho] no digital, analise seus pontos fracos e crie uma estratégia de posicionamento diferenciado para o meu e-book." },
-      { text: "Crie um <strong>mapa de conteúdo completo</strong> para um e-book de [nicho] com 8 capítulos, cada um resolvendo uma dor específica do avatar, com títulos, subtemas e call-to-actions." },
-      { text: "Escreva <strong>5 variações de promessas</strong> para a capa do e-book de [nicho], testando abordagens de transformação rápida, segredo revelado, método comprovado e guia definitivo." },
-      { text: "Desenvolva uma <strong>estratégia de lançamento</strong> do e-book para o nicho [nicho] em 30 dias, com cronograma de aquecimento, lista de espera, depoimentos e oferta de lançamento." },
-      { text: "Crie uma <strong>análise de tendências de 2026</strong> para o nicho [nicho]: o que está crescendo, o que está morrendo, oportunidades inexploradas e como posicionar o e-book como solução do futuro." },
-      { text: "Escreva <strong>3 estudos de caso fictícios</strong> de pessoas que aplicaram os ensinamentos do e-book no nicho [nicho], com dados específicos de transformação, obstáculos e resultados mensuráveis." },
-      { text: "Desenvolva uma <strong>estratégia de precificação</strong> para o e-book de [nicho]: análise de faixas de preço do mercado, psicologia de preços, teste A/B de valores e quando oferecer desconto sem desvalorizar." },
-      { text: "Crie um <strong>roteiro de vídeo de apresentação</strong> de 2 minutos para o e-book de [nicho], focado em YouTube e Reels, com gancho, problema, solução, prova e chamada para ação." },
-      { text: "Escreva um <strong>capítulo de bônus exclusivo</strong> para o e-book de [nicho] que aumente a percepção de valor: templates, checklists, planilhas ou recursos adicionais que o leitor pode usar imediatamente." },
-      { text: "Desenvolva uma <strong>estratégia de SEO orgânico</strong> para promover o e-book de [nicho]: 20 palavras-chave de cauda longa, estrutura de artigos de blog, e como usar o conteúdo gratuito para vender o pago." },
-      { text: "Crie um <strong>programa de afiliados</strong> para o e-book de [nicho]: estrutura de comissões, materiais de divulgação, como recrutar afiliados e um email de boas-vindas para novos parceiros." },
-      { text: "Escreva <strong>depoimentos modelo</strong> para o e-book de [nicho] — 5 exemplos de avaliações poderosas com detalhes específicos, resultados mensuráveis e histórias de transformação que geram credibilidade." },
-      { text: "Desenvolva uma <strong>estratégia de upsell pós-compra</strong> para o e-book de [nicho]: sequência de e-mails de entrega, oferta de mentoria, curso ou produto complementar no prazo de 7 dias após a compra." },
-      { text: "Crie um <strong>guia de design de capa</strong> para o e-book de [nicho]: paleta de cores que converte, tipografia profissional, elementos visuais do nicho, mockup 3D e como criar sem designer usando Canva ou Figma." }
-    ]
-  },
-  {
-    id: "afirmacoes",
-    category: "Afirmações Positivas",
-    icon: "✨",
-    color: "#e8c45b",
-    bg: "rgba(232,196,91,0.12)",
-    prompts: [
-      { text: "Crie <strong>50 afirmações poderosas</strong> para abundância financeira, organizadas em 5 temas: mentalidade de prosperidade, merecimento, oportunidades, gratidão e ação corajosa." },
-      { text: "Desenvolva um <strong>programa de afirmações matinais</strong> de 21 dias com uma afirmação central por dia, ritual de 5 minutos e exercício de ancoragem para fixar o estado mental positivo." },
-      { text: "Escreva <strong>30 afirmações para autoestima</strong> feminina, usando linguagem empoderada e inclusiva, com variações para mulheres que lutam com imagem corporal, relacionamentos e carreira." },
-      { text: "Crie <strong>afirmações terapêuticas</strong> para reprogramar crenças limitantes específicas: 'não sou suficiente', 'não mereço sucesso', 'relacionamentos machucam', com contra-afirmação para cada crença." },
-      { text: "Desenvolva um <strong>e-book de afirmações para crianças</strong> com 40 afirmações por faixa etária (3-6, 7-10, 11-14 anos), com ilustrações descritas e rituais lúdicos de repetição." },
-      { text: "Crie <strong>afirmações para atletas</strong> e pessoas em busca de performance física: foco, disciplina, superação de limites, recuperação de lesões e celebração de conquistas." },
-      { text: "Escreva um capítulo explicando a <strong>neurociência das afirmações</strong>: como a repetição muda os circuitos neurais, diferença entre afirmações eficazes e ineficazes, e técnica de prova emocional." },
-      { text: "Desenvolva <strong>afirmações de gratidão</strong> para 30 dias, com uma prática de journaling integrada, perguntas reflexivas e espaço para anotações pessoais em cada página." },
-      { text: "Crie <strong>afirmações para empresários e empreendedores</strong>: liderança, decisão, resiliência após falhas, visão de longo prazo e equilíbrio entre negócios e vida pessoal." },
-      { text: "Escreva <strong>afirmações de cura e saúde</strong> integrando crenças positivas sobre o corpo, sistema imunológico, energia vital e processo de envelhecimento saudável." },
-      { text: "Crie <strong>40 afirmações para superar o medo do fracasso</strong>: validando a tentativa, resignificando erros como aprendizado e construindo progressivamente a tolerância ao risco e à incerteza." },
-      { text: "Desenvolva um <strong>capítulo sobre afirmações em diferentes idiomas</strong>: por que afirmar em inglês, francês ou outro idioma pode ser mais eficaz para algumas pessoas e como usar afirmações bilíngues." },
-      { text: "Escreva <strong>afirmações específicas para cada signo do zodíaco</strong>: 5 afirmações poderosas alinhadas com as características, desafios e potenciais de cada signo, com ritual sugerido." },
-      { text: "Crie um <strong>diário de afirmações de 90 dias</strong> com estrutura diária: afirmação do dia, espaço para 3 evidências que a comprovam, reflexão noturna e nível de crença de 0 a 10." },
-      { text: "Desenvolva <strong>afirmações para pais e mães</strong>: paciência na criação dos filhos, equilíbrio entre família e carreira, valorização do papel de cuidador e autocuidado sem culpa." },
-      { text: "Escreva <strong>afirmações de relacionamento saudável</strong>: amor próprio como base, comunicação não-violenta, limites saudáveis, superação de relacionamentos tóxicos e abertura para o amor verdadeiro." },
-      { text: "Crie um capítulo sobre <strong>como criar suas próprias afirmações</strong>: 7 regras de ouro (tempo presente, positivo, específico, emocional, acreditável, pessoal e repetível) com exercícios práticos." },
-      { text: "Desenvolva <strong>afirmações visuais e mantras</strong>: diferença entre afirmação verbal, visual e escrita, como criar um vision board de afirmações, uso de post-its estratégicos e wallpapers motivacionais." },
-      { text: "Escreva <strong>afirmações para transições de vida</strong>: mudança de emprego, término de relacionamento, luto, aposentadoria, maternidade — com afirmações específicas para cada fase de recomeço." },
-      { text: "Crie um <strong>teste de crenças limitantes</strong> com 20 perguntas diagnósticas para o leitor descobrir quais áreas da vida mais precisam de reprogramação, com sugestões de afirmações personalizadas para cada resultado." }
-    ]
-  },
-  {
-    id: "vendas",
-    category: "Script de Vendas",
-    icon: "💰",
-    color: "#e8736a",
-    bg: "rgba(232,115,106,0.12)",
-    prompts: [
-      { text: "Escreva um <strong>script completo de VSL</strong> (Video Sales Letter) de 15 minutos para vender um e-book de [tema], com gancho irresistível, história de origem, apresentação do problema, solução e CTA urgente." },
-      { text: "Crie uma <strong>sequência de e-mails de lançamento</strong> de 7 dias para e-book: abertura de lista, identificação de dor, estudo de caso, quebra de objeções, urgência com bônus, prova social e último chamado." },
-      { text: "Desenvolva uma <strong>página de vendas persuasiva</strong> com headline poderosa, subheadline, bullets de benefícios, sobre o autor, depoimentos, detalhamento do conteúdo, garantia e oferta irresistível." },
-      { text: "Escreva <strong>10 títulos de e-mail</strong> com taxa de abertura alta para campanha de venda de e-book, usando curiosidade, benefício específico, pergunta provocativa e senso de urgência." },
-      { text: "Crie um <strong>script de DM no Instagram</strong> para converter seguidores em compradores do e-book, em 5 mensagens progressivas que educam, criam desejo e fecham a venda naturalmente." },
-      { text: "Desenvolva um <strong>roteiro de lives de vendas</strong> de 45 minutos: aquecimento de audiência, entrega de valor gratuito, transição para oferta, apresentação do e-book e Q&A de vendas." },
-      { text: "Escreva <strong>scripts de stories</strong> para sequência de 7 dias vendendo um e-book: teasers, bastidores, depoimentos, quebra de objeções, revelação de conteúdo e abertura do carrinho." },
-      { text: "Crie um <strong>upsell e order bump</strong> para maximizar o ticket médio na venda do e-book: descrição do produto complementar, benefícios adicionais e gatilhos para aceitar a oferta na hora da compra." },
-      { text: "Desenvolva um <strong>script de webinário</strong> de 60 minutos que ensina, gera desejo e converte para compra do e-book, com técnica de pirâmide de valor e fechamento suave." },
-      { text: "Escreva <strong>respostas para as 10 objeções mais comuns</strong> na venda de e-books: 'é caro', 'não tenho tempo', 'já vi de graça', 'não sei se funciona', 'vou deixar para depois', entre outras." },
-      { text: "Crie uma <strong>sequência de e-mails de abandono de carrinho</strong> de 3 mensagens: lembrete empático, benefício reforçado com bônus surpresa e última chance com escassez real de vagas ou tempo." },
-      { text: "Escreva um <strong>script de pitch para grupos do WhatsApp</strong>: apresentação do e-book em menos de 200 palavras que gera curiosidade, não parece spam e inclui convite natural para conhecer mais." },
-      { text: "Desenvolva uma <strong>estratégia de storytelling</strong> para vender o e-book: estrutura de história de origem do criador, jornada do herói aplicada ao cliente e como usar narrativa emocional nos posts." },
-      { text: "Crie um <strong>script de atendimento via chat</strong> para transformar dúvidas em vendas: como responder perguntas sobre o e-book, tratar indecisão, oferecer garantia e fechar com confiança." },
-      { text: "Escreva um <strong>copy para anúncio no Facebook/Instagram</strong> do e-book em 3 variações: formato curto (3 linhas), médio (8 linhas) e longo (storytelling de 20 linhas), cada um com CTA diferente." },
-      { text: "Desenvolva um <strong>email de reengajamento</strong> para leads frios que não compraram na última campanha: reativação com nova perspectiva do problema, atualização de conteúdo do e-book e oferta exclusiva." },
-      { text: "Crie um <strong>script de vendas por telefone/vídeo chamada</strong> para e-books de ticket mais alto (+R$200): qualificação do lead, apresentação da transformação, tour pelo conteúdo e fechamento consultivo." },
-      { text: "Escreva um <strong>capítulo de quebra de objeções dentro do próprio e-book</strong>: seção estratégica que antecipa as dúvidas do leitor sobre implementar o conteúdo e oferece soluções antes que ele abandone." },
-      { text: "Desenvolva um <strong>programa de indicação</strong> para e-book digital: estrutura de recompensas para quem indica, email para pedir indicações de forma não invasiva e página de agradecimento que converte." },
-      { text: "Crie um <strong>copy completo para página de obrigado</strong> pós-compra: confirmação entusiástica, próximos passos, oferta de upsell imediata, convite para comunidade e como extrair o máximo do e-book." }
-    ]
-  },
-  {
-    id: "dropshipping",
-    category: "Guia de Dropshipping",
-    icon: "📦",
-    color: "#5bc4a0",
-    bg: "rgba(91,196,160,0.12)",
-    prompts: [
-      { text: "Escreva o <strong>capítulo introdutório</strong> de um guia de dropshipping para iniciantes: o que é, como funciona o modelo de negócio, diferenças do e-commerce tradicional e mitos que precisam ser desmistificados." },
-      { text: "Crie um <strong>passo a passo completo</strong> para encontrar produtos vencedores no dropshipping: critérios de seleção, ferramentas (Minea, AdSpy, SaturationInspector) e como validar antes de investir." },
-      { text: "Desenvolva um capítulo sobre <strong>como encontrar fornecedores confiáveis</strong>: diferença AliExpress vs Shopify vs agentes privados, critérios de avaliação e como negociar melhores preços." },
-      { text: "Escreva uma <strong>guia de tráfego pago para dropshipping</strong>: estrutura de campanhas no Meta Ads, orçamento inicial recomendado, KPIs essenciais e como escalar um produto vencedor." },
-      { text: "Crie um capítulo de <strong>atendimento ao cliente</strong> em dropshipping: como gerenciar reclamações, prazos de entrega longos, reembolsos, chargebacks e como transformar clientes insatisfeitos em fiéis." },
-      { text: "Desenvolva um <strong>checklist de loja Shopify</strong> para dropshipping: configurações essenciais, apps obrigatórios, otimização de checkout, página de produto persuasiva e velocidade de carregamento." },
-      { text: "Escreva sobre <strong>aspectos legais e fiscais</strong> do dropshipping no Brasil: CNPJ, Simples Nacional, importação, nota fiscal e como operar de forma segura e dentro da lei." },
-      { text: "Crie um capítulo de <strong>copy e criativos</strong> para produtos de dropshipping: como escrever descrições que vendem, criar anúncios em vídeo, estrutura de UGC e testes A/B de criativos." },
-      { text: "Desenvolva uma seção de <strong>erros fatais dos iniciantes</strong> em dropshipping e como evitá-los: produto errado, nicho amplo demais, sem funil, abandono prematuro, ignorar métricas." },
-      { text: "Escreva um <strong>plano de negócios simplificado</strong> para dropshipping: projeção de custos iniciais, margem de lucro realista, meta de faturamento por fase e cronograma de 90 dias para primeiras vendas." },
-      { text: "Crie um capítulo sobre <strong>dropshipping nacional vs internacional</strong>: vantagens de fornecedores brasileiros (Dropi, Ideris, Bravo), prazo de entrega, custo logístico e quando cada modalidade é mais vantajosa." },
-      { text: "Desenvolva um guia de <strong>nicho e produto para dropshipping em 2026</strong>: os 10 nichos mais lucrativos, como analisar tendências no Google Trends, TikTok e Pinterest, e como evitar produtos saturados." },
-      { text: "Escreva um capítulo sobre <strong>funil de vendas completo</strong> para dropshipping: topo (awareness), meio (consideração) e fundo (conversão) com exemplos de anúncios e conteúdo para cada etapa." },
-      { text: "Crie uma seção sobre <strong>e-mail marketing para dropshipping</strong>: sequência de boas-vindas, recuperação de carrinho abandonado, pós-venda e como construir lista de compradores recorrentes." },
-      { text: "Desenvolva um capítulo de <strong>análise de métricas e otimização</strong>: CPM, CTR, CPC, ROAS, taxa de conversão — o que cada número significa, onde encontrar e como tomar decisões baseadas em dados." },
-      { text: "Escreva sobre <strong>como criar marca própria (white label)</strong> a partir do dropshipping: quando migrar para produto com marca, como encontrar fornecedores white label, embalagem personalizada e posicionamento premium." },
-      { text: "Crie um capítulo sobre <strong>TikTok para dropshipping</strong>: como o algoritmo funciona para e-commerce, TikTok Shop, estratégia de conteúdo orgânico + pago, e por que em 2026 é a maior oportunidade do mercado." },
-      { text: "Desenvolva uma seção sobre <strong>automações essenciais</strong> em dropshipping: apps para sincronização de estoque, processamento automático de pedidos, rastreamento e resposta automática de suporte." },
-      { text: "Escreva um capítulo de <strong>escala do negócio</strong>: quando e como escalar anúncios sem queimar o produto, estrutura de equipe para crescer, outsourcing de atendimento e operação para 6 dígitos mensais." },
-      { text: "Crie um <strong>glossário completo do dropshipping</strong> com 50 termos essenciais: ROAS, CVR, AOV, CPM, LTV, chargeback, fulfillment, pixel, lookalike — cada um explicado com exemplo prático de uso." }
-    ]
-  },
-  {
-    id: "produtividade",
-    category: "Gestão de Tempo e Produtividade",
-    icon: "⏰",
-    color: "#a0e87f",
-    bg: "rgba(160,232,127,0.12)",
-    prompts: [
-      { text: "Escreva um capítulo sobre o <strong>Método Time Blocking</strong>: como planejar a semana em blocos temáticos, diferença entre tarefas profundas e rasas, ferramentas digitais e físicas recomendadas." },
-      { text: "Crie um <strong>sistema de priorização</strong> combinando Matriz Eisenhower + Técnica 1-3-5: como aplicar diariamente, exemplos práticos e como lidar com urgências inesperadas sem perder o foco." },
-      { text: "Desenvolva um capítulo sobre <strong>como eliminar procrastinação</strong> com ciência comportamental: os 4 gatilhos neurológicos, técnica dos 2 minutos, regra da implementação de intenções e recompensas estratégicas." },
-      { text: "Escreva sobre <strong>rotinas de alta performance</strong>: estrutura de morning routine, ritual noturno, gestão de energia ao longo do dia e como adaptar rotinas para diferentes tipos de cronótipos." },
-      { text: "Crie um capítulo sobre <strong>gestão de e-mails, notificações e distrações digitais</strong>: técnica Inbox Zero, configuração de notificações, horários de verificação e ferramentas de foco como Freedom e Focusmate." },
-      { text: "Desenvolva uma seção sobre <strong>Técnica Pomodoro avançada</strong>: variações (52/17, 90 min de deep work), quando usar, como combinar com GTD (Getting Things Done) e tracking de produtividade." },
-      { text: "Escreva sobre <strong>delegação eficaz e automação</strong>: como identificar o que delegar, criar SOPs, ferramentas de automação (Zapier, Make) e como liberar horas para atividades de alto impacto." },
-      { text: "Crie um capítulo de <strong>planejamento semanal e revisão</strong>: template completo de planejamento dominical, perguntas de revisão sexta-feira, como ajustar metas e celebrar conquistas incrementais." },
-      { text: "Desenvolva uma seção sobre <strong>gestão de energia vs gestão de tempo</strong>: os 4 pilares (físico, emocional, mental, espiritual), como recarregar cada um e construir ritmos de alta performance sustentáveis." },
-      { text: "Escreva sobre <strong>ferramentas de produtividade</strong> para 2026: comparativo entre Notion, Obsidian, TickTick e Linear, com casos de uso específicos e como criar um sistema personalizado." },
-      { text: "Crie um capítulo sobre <strong>foco em ambiente de home office</strong>: como configurar o espaço físico ideal, separação psicológica trabalho/lazer, lidar com interrupções familiares e criar rituais de início/fim do expediente." },
-      { text: "Desenvolva um guia de <strong>metas SMART e OKRs pessoais</strong>: diferença entre objetivo e meta, como definir KRs mensuráveis, revisão trimestral e como alinhar metas pessoais com profissionais." },
-      { text: "Escreva sobre o <strong>método GTD (Getting Things Done)</strong> de David Allen: as 5 etapas (capturar, esclarecer, organizar, refletir e engajar), como implementar do zero e adaptar para a realidade brasileira." },
-      { text: "Crie um capítulo sobre <strong>produtividade criativa</strong>: diferença entre trabalho analítico e criativo, como criar condições para fluxo (flow state), quando forçar vs quando esperar a inspiração." },
-      { text: "Desenvolva uma seção sobre <strong>reuniões eficientes</strong>: como recusar reuniões desnecessárias diplomaticamente, estrutura de pauta, duração ideal, tomada de decisão e encerramento com ações claras." },
-      { text: "Escreva sobre <strong>leitura rápida e gestão de conhecimento</strong>: técnicas de leitura dinâmica, como tomar notas eficazes, sistema Zettelkasten, e como transformar o que você lê em ação concreta." },
-      { text: "Crie um capítulo de <strong>produtividade para multitarefas involuntários</strong>: pais, empreendedores solos e freelancers com múltiplos projetos — como organizar o caos sem enlouquecer usando batching e contextos." },
-      { text: "Desenvolva um guia de <strong>descanso estratégico</strong>: por que descansar mais aumenta a produtividade, tipos de descanso (físico, mental, criativo, social), técnica de power nap e como implementar." },
-      { text: "Escreva sobre <strong>produtividade digital minimalista</strong>: digital detox, como auditar seus apps e assinaturas, construir uma relação saudável com redes sociais e recuperar horas roubadas pela internet." },
-      { text: "Crie o capítulo final sobre <strong>construindo um sistema personalizado de produtividade</strong>: como integrar todas as técnicas do e-book, criar seu playbook único, medir resultados e evoluir o sistema continuamente." }
-    ]
-  },
-  {
-    id: "instagram",
-    category: "Marketing no Instagram 2026",
-    icon: "📱",
-    color: "#e87fd4",
-    bg: "rgba(232,127,212,0.12)",
-    prompts: [
-      { text: "Escreva um capítulo sobre o <strong>algoritmo do Instagram em 2026</strong>: como funciona a distribuição por tipo de conteúdo (Reels, Carrossel, Stories, Lives), sinais de ranqueamento e estratégias para aumentar alcance orgânico." },
-      { text: "Crie um <strong>guia de Reels virais</strong>: estrutura dos primeiros 3 segundos, técnica de looping, uso de áudio em alta, legendas otimizadas para acessibilidade e SEO visual no Instagram." },
-      { text: "Desenvolva uma <strong>estratégia de bio e perfil</strong> que converte seguidores em clientes: headline com proposta de valor, palavras-chave estratégicas, link na bio otimizado e foto/avatar profissional." },
-      { text: "Escreva sobre <strong>criação de conteúdo em série</strong> no Instagram: como criar séries de carrossel, mini-cursos em Stories e desafios de engajamento que aumentam saves e compartilhamentos." },
-      { text: "Crie um capítulo sobre <strong>Instagram Shopping e links de venda</strong>: configuração de loja, catálogo de produtos, tags em fotos e stories, checkout nativo e estratégias de social selling." },
-      { text: "Desenvolva uma <strong>estratégia de stories persuasivos</strong>: sequência de 10 stories que aquece, educa e converte, uso de enquetes, quizzes e caixas de perguntas para aumentar engajamento." },
-      { text: "Escreva sobre <strong>parcerias e co-criação</strong> no Instagram: como abordar influenciadores do seu nicho, estrutura de collabs, Lives conjuntas e como usar o recurso de post colaborativo para ampliar alcance." },
-      { text: "Crie um capítulo sobre <strong>Instagram Ads em 2026</strong>: objetivos de campanha corretos para cada etapa do funil, públicos de lookalike, retargeting avançado e como testar criativos com budget mínimo." },
-      { text: "Desenvolva uma <strong>estratégia de hashtags e SEO</strong> no Instagram: diferença entre hashtags de nicho, médias e amplas, pesquisa de palavra-chave na busca do Instagram e otimização de legendas." },
-      { text: "Escreva sobre <strong>análise de métricas e crescimento</strong>: KPIs essenciais (alcance, impressões, engajamento, salvamentos, cliques no link), como interpretar os dados do Instagram Insights e ajustar a estratégia." },
-      { text: "Crie um capítulo sobre <strong>calendário editorial no Instagram</strong>: como planejar 30 dias de conteúdo em 2 horas, distribuição de formatos por dia da semana, pilares de conteúdo e frequência ideal por nicho." },
-      { text: "Desenvolva um guia de <strong>copywriting para legendas</strong>: estrutura AIDA adaptada para Instagram, como escrever o gancho da primeira linha, técnica de cliffhanger para 'ver mais' e CTA que converte." },
-      { text: "Escreva sobre <strong>identidade visual no feed</strong>: como criar um feed coeso e profissional sem ser designer, paleta de cores, filtros consistentes, regra de grade e ferramentas como Canva e Unfold." },
-      { text: "Crie um capítulo sobre <strong>como monetizar um perfil pequeno</strong> (menos de 10 mil seguidores): estratégias de micro-influência, nichos hiperlocais, venda direta pelo direct e como criar produtos digitais a partir do seu conteúdo." },
-      { text: "Desenvolva uma seção sobre <strong>Instagram para negócios locais</strong>: geotags estratégicos, conteúdo de comunidade, parcerias com outros negócios locais, promoções exclusivas para seguidores e reviews em stories." },
-      { text: "Escreva sobre <strong>Lives estratégicas</strong> no Instagram: como preparar roteiro de live, aquecer audiência nas 48h antes, estrutura de abertura que retém, dinâmicas de engajamento e encerramento com CTA forte." },
-      { text: "Crie um capítulo sobre <strong>repurposing de conteúdo</strong>: como transformar 1 ideia em 10 formatos diferentes para Instagram (carrossel, reel, story, live, guia, highlight, legenda longa, pergunta, meme e bastidor)." },
-      { text: "Desenvolva uma estratégia de <strong>crescimento orgânico acelerado</strong>: método de engajamento nos primeiros 30 minutos após postagem, interação estratégica com perfis maiores e como usar comentários para ganhar alcance." },
-      { text: "Escreva sobre <strong>Instagram para lançamentos de produtos</strong>: linha do tempo de 4 semanas de aquecimento, série de conteúdos de bastidor, abertura do carrinho em stories e como criar FOMO genuíno." },
-      { text: "Crie um capítulo final com um <strong>plano de ação de 90 dias no Instagram</strong>: semana a semana, com metas de crescimento realistas, tipos de conteúdo por fase e como avaliar se a estratégia está funcionando." }
-    ]
-  },
-  {
-    id: "ia",
-    category: "Criação de Conteúdo com IA",
-    icon: "🤖",
-    color: "#c8a96e",
-    bg: "rgba(200,169,110,0.12)",
-    prompts: [
-      { text: "Escreva um capítulo introdutório sobre <strong>como usar IA para criar e-books</strong>: fluxo de trabalho completo do briefing à publicação, ferramentas mais indicadas em 2026 e como manter voz autoral única." },
-      { text: "Crie um guia de <strong>prompt engineering avançado</strong>: técnicas de Chain of Thought, few-shot prompting, definição de persona, instruções de formato e como refinar respostas para máxima qualidade." },
-      { text: "Desenvolva um capítulo sobre <strong>IA para criação de imagens</strong> para e-books: Midjourney vs DALL-E vs Stable Diffusion, prompts de imagem profissionais, licenciamento e consistência visual." },
-      { text: "Escreva sobre <strong>fluxo de trabalho com IA para conteúdo de redes sociais</strong>: geração em lote de legendas, calendário editorial automático, repurposing de um e-book em 30 tipos de conteúdo." },
-      { text: "Crie um guia de <strong>revisão e edição de conteúdo gerado por IA</strong>: como identificar textos genéricos, injetar personalidade, adicionar dados reais e tornar o conteúdo indetectável como IA-written." },
-      { text: "Desenvolva uma seção sobre <strong>ética e transparência no uso de IA</strong>: quando declarar uso de IA, direitos autorais de conteúdo gerado, LGPD, melhores práticas e tendências regulatórias." },
-      { text: "Escreva sobre <strong>ferramentas de IA essenciais</strong> para criadores de conteúdo em 2026: ChatGPT, Claude, Gemini, Perplexity, Jasper — comparativo de uso, preços e casos de uso específicos." },
-      { text: "Crie um capítulo sobre <strong>automação do processo de criação</strong>: como usar n8n ou Make para automatizar pesquisa, geração de rascunhos, revisão e publicação de e-books e conteúdo digital." },
-      { text: "Desenvolva um guia de <strong>SEO com IA</strong>: pesquisa de palavras-chave com IA, otimização de títulos e meta-descrições, geração de FAQ semântico e estratégia de conteúdo para ranqueamento." },
-      { text: "Escreva o capítulo final sobre <strong>monetização de conteúdo criado com IA</strong>: modelos de negócio (e-books, cursos, newsletters, agência de conteúdo), precificação e como escalar a produção mantendo qualidade." },
-      { text: "Crie um capítulo sobre <strong>como dar voz autoral ao conteúdo de IA</strong>: técnica de 'treinar' a IA com amostras do seu estilo, uso de memória em conversas longas, e checklist de personalização antes de publicar." },
-      { text: "Desenvolva um guia de <strong>criação de cursos com IA</strong>: como usar IA para estruturar módulos, criar slides, gerar scripts de vídeo, criar quizzes e materiais de apoio — do zero ao produto completo." },
-      { text: "Escreva sobre <strong>IA para pesquisa e fact-checking</strong>: como usar Perplexity e Claude para pesquisar fontes confiáveis, cruzar dados, verificar afirmações e criar conteúdo embasado e preciso." },
-      { text: "Crie um capítulo de <strong>prompts para diferentes tipos de escrita</strong>: prompts para narrativa, prompts para listas educativas, prompts para conteúdo emocional, técnico e comercial — com exemplos prontos." },
-      { text: "Desenvolva uma seção sobre <strong>IA para tradução e localização de e-books</strong>: como usar IA para traduzir, adaptar culturalmente e formatar e-books em outros idiomas, ampliando o mercado para além do Brasil." },
-      { text: "Escreva sobre <strong>construção de agente de IA pessoal</strong>: como criar um GPT personalizado ou usar o Projeto Claude para ter um assistente treinado no seu nicho, estilo e base de conhecimento exclusiva." },
-      { text: "Crie um capítulo sobre <strong>IA para análise de mercado e tendências</strong>: como usar IA para monitorar concorrentes, identificar lacunas de conteúdo, analisar comentários do público e encontrar ideias de e-books lucrativos." },
-      { text: "Desenvolva um guia de <strong>criação de newsletter com IA</strong>: estrutura de newsletter que converte, como usar IA para criar edições semanais, personalização por segmento de lista e estratégia de monetização." },
-      { text: "Escreva sobre <strong>IA para design de e-books</strong>: como usar Canva com IA, Adobe Firefly, Gamma e outras ferramentas para criar diagramação profissional, capas atraentes e infográficos sem ser designer." },
-      { text: "Crie um capítulo sobre <strong>criação de podcasts e audiobooks com IA</strong>: como transformar o e-book em áudio usando vozes sintéticas realistas, edição com IA, distribuição em plataformas e nova fonte de renda." }
-    ]
-  }
+var D=[
+{id:"receitas",cat:"E-book de Receitas",icon:"🍽️",color:"#e87f5b",bg:"rgba(232,127,91,0.11)",prompts:[
+{l:"Estrutura Editorial Completa + Índice do E-book",f:"PAPEL: Você é editor gastronômico sênior com 15 anos de experiência em culinária gourmet e publicação de livros de receitas.\n\nCONTEXTO: E-book de receitas profissional para venda digital.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO ESPECÍFICO: [ex: mães com pouco tempo / veganos iniciantes / amantes de culinária italiana / pessoas com restrição glúten-lactose / jovens aprendendo a cozinhar]\n→ ESTILO CULINÁRIO: [ex: rápida do dia a dia / gourmet / internacional / regional / funcional]\n→ NÍVEL DO LEITOR: [nunca cozinhou / básico / intermediário / quer se profissionalizar]\n→ FAIXA DE PREÇO: [R$27-47 / R$67-97 / R$127+ premium]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Use apenas técnicas culinárias reais — adaptar ao nível do público informado\n→ Não invente ingredientes fictícios — para exóticos, indicar onde encontrar ou substituto\n→ Tempos de preparo: realistas para cozinha doméstica\n→ Se o público for iniciante: não use jargão sem explicar\n\nESTRUTURA QUE DEVE GERAR:\n\n① PÁGINAS INICIAIS\n- Página de rosto com linguagem que ressoa com o público específico\n- Carta da autora: 120 palavras, tom ajustado ao público\n- Como usar este e-book no vocabulário do público\n- Legenda de ícones adaptada\n\n② 5 CAPÍTULOS TEMÁTICOS\nPara cada capítulo: nome que fala com o público + 6 receitas com nome / tempo / nível / rendimento\n\n③ CAPÍTULO BÔNUS\n- Técnicas Fundamentais: nível ajustado ao perfil\n- Glossário culinário: complexidade adequada ao nível\n\n④ PÁGINAS FINAIS\n- Índice de ingredientes especiais (com onde comprar)\n- Sobre a autora [espaço para personalizar]\n\nNOTA: Gere apenas o índice e mapa — não as receitas ainda."},
+{l:"Ficha Técnica Completa de Receita com Ciência do Sabor",f:"PAPEL: Você é chef formado pelo Le Cordon Bleu e autor de livros de culinária científica.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NOME DA RECEITA: [insira aqui]\n→ PÚBLICO DO E-BOOK: [ex: família brasileira / veganos / low carb]\n→ NÍVEL DO LEITOR: [iniciante / intermediário]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Use apenas reações químicas reais: Maillard, caramelização, emulsificação\n→ Tempos de cozimento: realistas para fogão a gás residencial brasileiro\n→ Temperaturas: sempre em Celsius\n→ Informação nutricional: valores estimados, tabelas TACO/IBGE, sempre com nota: 'Consulte nutricionista para dietas específicas'\n→ Não invente prêmios, certificações ou origens históricas não verificáveis\n\nSEÇÕES QUE DEVE GERAR:\n\n[APRESENTAÇÃO]\n- Parágrafo de 80 palavras com história/inspiração (use 'conta-se que' para afirmações históricas)\n- Perfil de sabor: doce / salgado / ácido / amargo / umami (escala 1-5)\n- Por que essa receita funciona quimicamente (2 frases acessíveis)\n\n[FICHA TÉCNICA]\n- Rendimento / Tempo preparo ativo / Tempo total / Dificuldade\n- Equipamentos necessários (lista para cozinha doméstica)\n\n[INGREDIENTES]\n- Tabela: ingrediente | gramas | medida caseira | substituto possível + impacto\n\n[MODO DE PREPARO]\n- Numerado, com temperatura e tempo em etapas relevantes\n- [DICA DO CHEF] após etapas críticas\n- [PONTO CERTO: textura/cor/cheiro esperados]\n\n[CIÊNCIA DA RECEITA]\n- 3 bullet points explicando reações durante o preparo\n\n[VARIAÇÕES]\n- Versão vegana | sem glúten | express (<30 min)\n\n[HARMONIZAÇÃO E EMPLATAMENTO]\n- 3 sugestões de apresentação visual\n- 2 bebidas não-alcoólicas + 1 alcoólica genérica\n\n[ARMAZENAMENTO]\n- Prazo: geladeira / freezer / temperatura ambiente\n\n[INFORMAÇÃO NUTRICIONAL ESTIMADA]\n- Tabela por porção + disclaimer obrigatório"},
+{l:"Capítulo Completo: 6 Técnicas Fundamentais da Cozinha",f:"PAPEL: Você é professor de gastronomia especialista em ensinar técnicas complexas para cozinheiros amadores.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: iniciantes absolutos / intermediários querendo melhorar / pessoas com restrição alimentar]\n→ CONTEXTO CULTURAL: [ex: culinária brasileira do dia a dia / culinária internacional / vegetariana]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Descreva apenas técnicas reconhecidas pela gastronomia clássica ou contemporânea documentada\n→ Não invente nomes de técnicas — se a origem for disputada, diga isso\n→ Temperaturas e pontos: precisos e verificáveis\n→ Para variações regionais: mencione ambas as versões sem eleger 'a certa'\n→ Não prometa resultados absolutos — use 'tende a resultar em', 'na maioria dos casos'\n\nMínimo 1.200 palavras. ESTRUTURA:\n\nINTRODUÇÃO (150 palavras): por que dominar técnicas transforma qualquer receita.\n\nTÉCNICA 1: MISE EN PLACE\n- Definição precisa (origem francesa documentada)\n- Como aplicar em casa: 5 etapas\n- Erro mais comum + solução\n\nTÉCNICA 2: SELAGEM E REAÇÃO DE MAILLARD\n- Ciência acessível em 3 frases (Maillard, 1912 — verificável)\n- Temperatura ideal / indicadores visuais\n- Quando NÃO selar\n\nTÉCNICA 3: REDUÇÕES E MOLHOS\n- Princípio da concentração de sabores\n- Como saber o ponto\n\nTÉCNICA 4: EMULSIFICAÇÃO\n- Exemplos reais verificáveis (maionese, hollandaise, vinagrete)\n- Por que emulsões quebram e como salvar\n\nTÉCNICA 5: COZIMENTO ÚMIDO vs SECO\n- Tabela: brasear, refogar, grelhar, assar, vapor\n- Qual técnica para qual ingrediente\n\nTÉCNICA 6: TEMPERO EM CAMADAS\n- Quando e como salgar em cada etapa\n- Equilíbrio ácido + gordura + sal + calor\n\nENCERRAMENTO (80 palavras): convite para praticar nas receitas do e-book."},
+{l:"Plano Alimentar de 7 Dias com Lista de Compras (Bônus)",f:"PAPEL: Você é nutricionista e chef especializada em alimentação equilibrada e sem dietas restritivas.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ OBJETIVO DO PÚBLICO: [ex: praticidade no dia a dia / emagrecimento com saúde / alimentação fitness / vegetariano]\n→ RESTRIÇÕES ALIMENTARES: [ex: sem glúten / sem lactose / vegano / nenhuma]\n→ FAIXA ORÇAMENTÁRIA: [ex: econômico R$30/dia / médio R$60/dia / sem restrição]\n→ TAMANHO DA FAMÍLIA: [ex: pessoa solo / casal / família com filhos]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — CRÍTICAS PARA SAÚDE:\n→ NÃO prometa perda de peso, ganho muscular ou resultado físico específico\n→ NÃO classifique alimentos como 'proibidos', 'mágicos' ou 'detox'\n→ NÃO atribua propriedades de cura a nenhum alimento\n→ Use sempre: 'pode contribuir para', 'é uma boa fonte de'\n→ Calorias: use faixas estimadas (ex: aprox. 450-520 kcal), não valores exatos\n→ INCLUA obrigatoriamente: 'Este plano é uma sugestão geral. Consulte nutricionista para dietas individualizadas.'\n\nESTRUTURA:\n\nINTRODUÇÃO (120 palavras): filosofia do plano, como adaptar, por que consultar nutricionista.\n\nPLANO DOS 7 DIAS:\nPara cada dia — 5 refeições com: sugestão / estimativa de kcal / receita referenciada do e-book\nTotal diário estimado em faixa.\n\nLISTA DE COMPRAS SEMANAL por categoria:\n- Proteínas / Carboidratos / Vegetais / Frutas / Laticínios / Temperos\nQuantidades para a semana + estimativa de custo em faixas.\n\nBATCH COOKING (preparo antecipado):\n- O que preparar no domingo\n- O que congelar vs refrigerar\n- Tempo total estimado\n\nDISCLAIMER FINAL completo e obrigatório."},
+{l:"Seção Completa: Emplatamento, Harmonização e Fotografia com Celular",f:"PAPEL: Você é sommelier certificado e especialista em food styling e fotografia gastronômica com celular.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ ESTILO DO E-BOOK: [ex: receitas do dia a dia / gourmet / comfort food / culinária internacional]\n→ PÚBLICO: [ex: iniciantes que querem impressionar / criadores de conteúdo gastronômico]\n→ TIPO DE RECEITAS DOMINANTES: [ex: carnes / massas / bolos / vegetariano]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Harmonizações: use princípios reais de complemento/contraste/região — não invente combinações\n→ Vocabulário sensorial: use termos precisos (tânico, ácido, encorpado) com definição na primeira vez\n→ Técnicas de emplatamento: executáveis com utensílios domésticos comuns\n→ Fotografia: baseada em princípios reais de composição e iluminação natural\n→ Não prometa 'foto de revista com celular' — use 'resultado visivelmente mais profissional'\n\nPARTE 1 — EMPLATAMENTO (400 palavras):\n- Regra dos números ímpares e por que funciona\n- Altura e profundidade no prato\n- Uso de molho: técnicas de ponto, pincelada e decoração\n- Guarnições: função decorativa E gustativa\n- Os 5 erros mais comuns + como corrigir\n\nPARTE 2 — HARMONIZAÇÃO SIMPLIFICADA (350 palavras):\n- Princípio 1: O que cresce junto, vai junto (terroir regional)\n- Princípio 2: Complemento de sabores similares\n- Princípio 3: Contraste intencional\n- Tabela: 8 pratos típicos × melhor bebida alcoólica × melhor não-alcoólica × por quê\n\nPARTE 3 — FOTOGRAFIA COM CELULAR (300 palavras):\n- Luz natural: melhor horário, ângulo, difusor caseiro com papel vegetal\n- Os 3 ângulos clássicos: topo (flat lay) / 45° / frontal — quando usar cada\n- Composição: regra dos terços aplicada a comida\n- Props acessíveis que transformam a foto\n- Configurações práticas no celular para foto gastronômica\n- O que NUNCA fazer: flash direto, fundo bagunçado, prato frio vs quente"}
+]},
+{id:"meditacao",cat:"Meditações Guiadas",icon:"🧘",color:"#8b6af5",bg:"rgba(139,106,245,0.1)",prompts:[
+{l:"Script Completo: Meditação para Ansiedade e Sono (12 min)",f:"PAPEL: Você é instrutor de meditação certificado em MBSR (Mindfulness-Based Stress Reduction, Jon Kabat-Zinn, UMASS Medical School) e psicólogo clínico especializado em técnicas cognitivo-comportamentais para ansiedade.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO ESPECÍFICO: [ex: mulheres executivas com ansiedade pós-trabalho / mães de primeira viagem / estudantes em época de provas / homens em cargos de liderança]\n→ FAIXA ETÁRIA: [ex: 25-35 anos / 40-55 anos]\n→ GATILHO EMOCIONAL PRINCIPAL: [ex: overthinking sobre trabalho / preocupação financeira / ansiedade de desempenho]\n→ VARIAÇÃO DE CENÁRIO — escolha ou peça os 3:\n  A) NATURAL: [ex: margem de rio ao entardecer, montanha com neblina, jardim]\n  B) CONSTRUÍDO: [ex: biblioteca com lareira, quarto de infância, café vazio na chuva]\n  C) ABSTRATO: [ex: bolha de luz dourada, nuvem suspensa, gruta cristalina]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E SEGURANÇA:\n→ Use APENAS técnicas validadas: body scan (MBSR), respiração diafragmática, PMR, visualização guiada\n→ NÃO prometa cura ou tratamento — inclua: 'Esta prática é complementar e não substitui acompanhamento profissional'\n→ Respiração: proporções seguras para público geral (não prescreva apneia acima de 4 segundos para iniciantes)\n→ ADAPTE a linguagem e exemplos ao público informado — NÃO use linguagem genérica de 'adultos'\n→ Para a visualização: gere as 3 opções de cenário acima — NÃO limite a apenas praia ou floresta\n\nFORMATO: indicações [PAUSA 5 SEG] [VOZ SUAVE] [RESPIRAÇÃO LENTA]\nDuração de cada seção indicada. Nota técnica ao narrador no topo.\n\n[0:00-1:30] ABERTURA — script que espelha a realidade do público informado\n[1:30-3:00] RESPIRAÇÃO 4-4-6 — instrução + justificativa fisiológica integrada\n[3:00-5:30] BODY SCAN — linguagem 'observe', 'perceba', sem julgamento\n[5:30-8:00] VISUALIZAÇÃO — apresente as 3 opções de cenário, leitor escolhe\n[8:00-10:30] RELAXAMENTO MUSCULAR PROGRESSIVO — 5 grupos musculares\n[10:30-12:00] ENCERRAMENTO — sugestão hipnagógica, contagem regressiva\n\nNOTAS PÓS-SCRIPT: contraindicações + adaptações + frequência sugerida"},
+{l:"Programa Completo: 21 Dias de Meditação para Iniciantes",f:"PAPEL: Você é desenvolvedor de programas de bem-estar baseado em evidências, com formação em psicologia positiva e instrução de meditação.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [ex: profissionais de saúde sob estresse / mães em licença maternidade / executivos de TI / universitários em início de carreira]\n→ FOCO PRINCIPAL: [ex: reduzir ansiedade profissional / melhorar sono / lidar com sobrecarga emocional]\n→ NÍVEL: [nunca meditou / já tentou mas desistiu / pratica ocasionalmente]\n→ FORMATO: [apenas texto / texto + QR codes para áudio]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ '21 dias': mencionar honestamente que Lally et al. (2010, UCL) indicam 18 a 254 dias para formação de hábito — usar como estrutura motivacional, não como promessa científica\n→ NÃO prometa 'transformação garantida'\n→ Técnicas: MBSR, Vipassana, Loving-Kindness, mindfulness clínico — apenas documentadas\n→ NÃO prescreva como tratamento de depressão, TEPT ou transtorno diagnosticado\n→ ADAPTE os exemplos e desafios ao público informado — não use exemplos genéricos\n\nESTRUTURA:\n\nINTRODUÇÃO (250 palavras) — adaptada ao público específico\n\nSEMANA 1 — FUNDAMENTOS (Dias 1-7)\nPara cada dia — CONTEÚDO COMPLETO:\n- Título contextualizado para o público (ex: para executivos: 'A Pausa que Seu Cérebro Pede')\n- Técnica + script de 150-200 palavras com exemplos do cotidiano do público\n- 1 pergunta de journaling conectada à realidade do público\n- Desafio informal adaptado à rotina do público\n- Duração: 5-8 minutos\n\nSEMANA 2 — APROFUNDAMENTO (Dias 8-14)\nMesma estrutura. Técnicas: body scan completo, loving-kindness, atenção aberta. 10-15 min.\n\nSEMANA 3 — INTEGRAÇÃO (Dias 15-21)\nMesma estrutura. Movimento, cotidiano, autonomia. 15-20 min.\n\nDIA 21 — CELEBRAÇÃO E CONTINUIDADE\n\nAPÊNDICE A: 10 obstáculos + orientação\nAPÊNDICE B: glossário de 20 termos\nDISCLAIMER FINAL completo"},
+{l:"Script: Meditação de Visualização para Abundância (15 min)",f:"PAPEL: Você é coach de mentalidade e instrutor de meditação, especializado em psicologia cognitiva e visualização criativa sem apelo a pseudociência.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [ex: empreendedoras iniciando negócio / profissionais em transição de carreira / freelancers com bloqueios financeiros]\n→ ÁREA DE ABUNDÂNCIA FOCO: [financeira / profissional / relacionamentos / saúde / propósito — escolha uma]\n→ TOM DO PÚBLICO: [racional/cético — evitar linguagem mística / aberto ao espiritual / prático e orientado a ação]\n→ VARIAÇÃO DE CENÁRIO OBRIGATÓRIA — gere as 3 opções:\n  OPÇÃO A: COTIDIANO TRANSFORMADO — uma manhã comum na vida futura desejada (detalhes sensoriais concretos)\n  OPÇÃO B: MOMENTO DE RECONHECIMENTO — uma conquista sendo celebrada (quem está presente, o que sente)\n  OPÇÃO C: ESPAÇO DE PAZ E PLENITUDE — lugar sem pressão de provar nada (liberdade, presença, contentamento)\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO use 'lei da atração' como verdade científica\n→ Embase em neurociência esportiva (visualização motora) e psicologia positiva (Seligman, Csikszentmihalyi) de forma geral\n→ NÃO prometa resultados financeiros específicos\n→ Objetivo declarado: clareza de objetivos, redução de crenças limitantes, motivação para ação concreta\n→ ADAPTE vocabulário ao tom do público informado\n\n[0:00-2:00] ANCORAGEM — adaptada ao contexto do público\n[2:00-4:00] LIMPEZA MENTAL — técnica de 'nuvens passando', adaptada às preocupações típicas do público\n[4:00-7:00] VISUALIZAÇÃO — apresente as 3 opções de cenário, leitor escolhe. Para cada: visual + auditivo + tátil + emocional\n[7:00-10:00] ENCONTRO COM O EU FUTURO — diálogo imaginário, auto-resposta projetiva\n[10:00-12:00] ÂNCORA DE IDENTIDADE — afirmações de identidade adaptadas ao público e área foco\n[12:00-15:00] RETORNO E 1 AÇÃO CONCRETA — específica ao universo do público\n\nPÓS-SCRIPT: journaling de 5 minutos para ancorar os insights"},
+{l:"Script: Meditação de Autocompaixão — Programa MSC de Neff & Germer (18 min)",f:"PAPEL: Você é psicoterapeuta certificado em Mindful Self-Compassion (MSC), programa de Kristin Neff (University of Texas) e Christopher Germer (Harvard Medical School).\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: mulheres com síndrome da impostora / homens que não sabem pedir ajuda / adolescentes com autocrítica intensa / pessoas em luto ou fim de relacionamento]\n→ TIPO DE AUTOCRÍTICA DOMINANTE: [perfeccionismo / vergonha do corpo / culpa como cuidador / autocrítica profissional]\n→ TOM: [mais científico e laico / integra espiritualidade suave / linguagem feminista]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E SEGURANÇA:\n→ INCLUA AVISO NO INÍCIO: esta prática pode ativar emoções intensas — instrução clara para pausar\n→ NÃO posicione como substituta de psicoterapia para trauma complexo ou TEPT\n→ Técnicas: especificamente do MSC de Neff & Germer — mencionar como tal\n→ Linguagem completamente inclusiva — sem pressuposição de gênero ou estrutura familiar\n→ Evitar: 'tudo vai ficar bem', 'você vai superar isso facilmente' (minimização que Neff identifica como prejudicial)\n\nAVISO INICIAL: texto completo de segurança emocional.\n\n[0:00-2:00] CHEGADA E PERMISSÃO\n[2:00-5:00] RECONHECIMENTO DO SOFRIMENTO — Componente 1 do MSC (affect labeling, Lieberman, UCLA)\n[5:00-8:00] HUMANIDADE COMPARTILHADA — Componente 2 do MSC\n[8:00-12:00] GENTILEZA PARA CONSIGO — Componente 3: gesto físico (pesquisa ocitocina, Paul Gilbert), frases adaptáveis, técnica do 'amigo compassivo'\n[12:00-15:00] SOFTEN, SOOTHE, ALLOW — técnica de Germer & Neff\n[15:00-18:00] ENCERRAMENTO COM INTENÇÃO GENTIL\n\nNOTAS PÓS-SCRIPT: recursos verificados (self-compassion.org) + quando encaminhar para psicoterapia"},
+{l:"Capítulo Científico: A Neurociência da Meditação (1.500 palavras)",f:"PAPEL: Você é neurocientista e divulgador científico, especializado em traduzir pesquisas sobre meditação para linguagem acessível sem perder precisão.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: leitor cético que precisa de evidências / praticante espiritual que quer embasamento científico / profissional de saúde curiose]\n→ TOM: [acadêmico acessível / popular e empolgante / neutro e informativo]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — CRÍTICAS:\n→ NUNCA invente estudos, pesquisadores ou universidades\n→ Para pesquisas de alta certeza: 'Pesquisas do laboratório de Davidson na University of Wisconsin indicam...' — sem inventar detalhes\n→ Para demais: 'A literatura científica de mindfulness indica...' ou 'Estudos em periódicos como JAMA Internal Medicine sugerem...'\n→ MENCIONE limitações da pesquisa: amostras pequenas, viés de autorrelato\n→ Diferencie: 'correlação observada' vs 'relação de causa e efeito estabelecida'\n→ NÃO prometa que meditação cura ou previne condições específicas\n\nMínimo 1.500 palavras. ESTRUTURA:\n\nABERTURA (150 palavras): por que a meditação saiu dos mosteiros.\n\nSEÇÃO 1 — O CÉREBRO DURANTE A MEDITAÇÃO (400 palavras):\n- Córtex pré-frontal e regulação emocional\n- Amígdala: o que estudos longitudinais indicam\n- Rede de Modo Padrão (DMN) e ruminação\n- Neuroplasticidade: mudanças estruturais\n- O que a neuroimagem NÃO pode concluir\n\nSEÇÃO 2 — BENEFÍCIOS DOCUMENTADOS (400 palavras):\n- Ansiedade/estresse: o que o MBSR de 8 semanas indica\n- Sono: evidências de estudos de polissonografia\n- Atenção e foco\n- Bem-estar subjetivo\n- O que a pesquisa ainda NÃO pode afirmar\n\nSEÇÃO 3 — TIPOS E MECANISMOS DISTINTOS (300 palavras):\nAtenção Focada / Monitoramento Aberto / Loving-Kindness / Meditação Transcendental — mecanismos e evidências distintas\n\nSEÇÃO 4 — COMO PRATICAR EFICAZMENTE (250 palavras):\nFrequência / qualidade da atenção vs tempo / consistência\n\nCONCLUSÃO (150 palavras) com expectativas realistas."}
+]},
+{id:"nicho",cat:"Prompts para Nicho",icon:"🎯",color:"#5ab4e8",bg:"rgba(90,180,232,0.1)",prompts:[
+{l:"Avatar Ultra-Completo de Cliente Ideal (8 seções)",f:"PAPEL: Você é estrategista de marketing digital sênior especializado em pesquisa de persona para produtos de informação.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Tema do e-book: [TEMA]\n→ Preço: R$[VALOR]\n→ Canal principal: [Instagram / WhatsApp / Tráfego pago / YouTube]\n→ PÚBLICO-ALVO ESPECÍFICO: [ex: 'mulheres de 35-50 anos em cargos de gestão que se sentem esgotadas' OU 'homens de 28-40 anos que querem abrir negócio mas têm medo de largar o emprego']\n→ REGIÃO/CONTEXTO CULTURAL: [ex: grandes centros urbanos / interior / nordeste]\n→ SITUAÇÃO DE VIDA ATUAL: [ex: casada com filhos / solteiro em aluguel / divorciada recomeçando]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO invente dados — marque [estimativa] quando for suposição\n→ Linguagem do avatar: como pessoas REAIS falam, não como copy de marketing\n→ Inclua contradições — pessoas têm comportamentos inconsistentes\n→ Não generalize — seja específico ao perfil informado\n\nSEÇÃO 1 — PERFIL DEMOGRÁFICO DETALHADO\nNome fictício / idade / cidade / estado civil / filhos / escolaridade / profissão / renda / moradia.\n\nSEÇÃO 2 — UM DIA NA VIDA (6h-23h)\nHora a hora: onde está, o que faz, como se sente, o que consome. Especialmente: quando e como usa o celular.\n\nSEÇÃO 3 — UNIVERSO DIGITAL\nQuais redes e como usa. Conteúdo que salva, compartilha, assiste até o fim.\n\nSEÇÃO 4 — DORES REAIS (não superficiais)\n→ 3 dores primárias (problema central)\n→ 3 dores secundárias (consequências)\n→ Palavras EXATAS que usa para descrever o problema\n→ O que já tentou e por que falhou\n→ A dor que não admite para ninguém\n\nSEÇÃO 5 — DESEJOS E SONHOS\n→ Desejo consciente vs inconsciente\n→ Vida 6 meses depois de resolver o problema\n→ Identidade desejada: quem quer ser\n\nSEÇÃO 6 — OBJEÇÕES À COMPRA\n5 objeções + resposta ideal + quando a resposta correta é 'esse produto não é para você'\n\nSEÇÃO 7 — GATILHOS DE DECISÃO\nO que faz clicar 'comprar agora'. O que certamente afastaria. Qual prova social é mais persuasiva para este perfil.\n\nSEÇÃO 8 — CITAÇÕES PARA COPY\n→ 5 frases que o avatar diria sobre o problema\n→ 2 frases que diria depois de resolver"},
+{l:"Framework Completo de Validação de Nicho em 5 Etapas",f:"PAPEL: Você é analista de mercado digital especializado em validação de nichos para produtos de informação.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ TEMA DO E-BOOK QUE QUER VALIDAR: [TEMA]\n→ CANAL PRINCIPAL QUE VOCÊ USA: [Instagram / YouTube / WhatsApp / Blog]\n→ SEU NÍVEL DE EXPERTISE NO TEMA: [iniciante / intermediário / especialista]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ FORNEÇA os métodos e frameworks — NÃO invente resultados (você não tem acesso a dados em tempo real)\n→ Plataformas de pesquisa: apenas reais — Google Trends, Ubersuggest, Answer the Public\n→ Se eu mencionar um nicho e você tiver insegurança sobre seu estado atual, diga claramente\n→ Seja honesto sobre saturação: se tem sinais, diga como identificar e o que fazer\n\nETAPA 1 — PESQUISA DE DEMANDA (método completo):\n→ Como usar Google Trends: termos, crescimento vs pico isolado, sazonalidade\n→ Autocomplete do Google e YouTube: extraindo dores reais\n→ O que é sinal de boa demanda vs nicho sem procura\n\nETAPA 2 — ANÁLISE DA CONCORRÊNCIA:\n→ Como mapear 5 concorrentes principais\n→ Template de planilha de análise: colunas obrigatórias\n→ Como identificar o 'espaço branco': o que o mercado não oferece bem\n\nETAPA 3 — PESQUISA QUALITATIVA:\n→ 10 perguntas para entrevistar potenciais compradores\n→ Como pesquisar gratuitamente: grupos Facebook, comentários YouTube, avaliações Amazon\n→ Como interpretar o que as pessoas dizem vs o que realmente sentem\n\nETAPA 4 — TESTE DE CONCEITO:\n→ Como criar post de teste no Instagram sem revelar o produto\n→ Usando enquete no Stories para validar interesse\n→ O que é validação suficiente para prosseguir\n\nETAPA 5 — DECISÃO GO/NO-GO:\n→ Critérios objetivos para seguir ou pivotar\n→ Tabela de pontuação: demanda + concorrência + capacidade de entrega + lucratividade\n→ Score mínimo e o que fazer se o nicho estiver saturado"},
+{l:"10 Títulos Magnéticos com Análise Completa de Gatilhos",f:"PAPEL: Você é copywriter sênior especializado em títulos para produtos de informação digitais no Brasil.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Tema central: [TEMA]\n→ Público principal: [DESCREVA com especificidade]\n→ Principal benefício/transformação: [O QUE MUDA NA VIDA DO LEITOR]\n→ Diferencial do conteúdo: [O QUE TEM QUE OUTROS NÃO TÊM]\n→ Faixa de preço: R$[VALOR]\n→ CLICHÊS QUE QUER EVITAR NO TÍTULO: [ex: 'guia definitivo' / 'do zero ao sucesso' / 'segredos que não te contaram']\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Títulos com números devem corresponder ao conteúdo real\n→ Não prometa o que o produto não pode cumprir\n→ Evite superlativos vazios sem justificativa no subtítulo\n→ Não use nomes de métodos registrados sem verificação\n\nPARA CADA UM DOS 10 TÍTULOS:\nTítulo principal / Subtítulo / Tagline de marketing (1 frase para stories) / Gatilho principal / Por que funciona para este público específico (2 frases) / Melhor contexto de uso\n\nVARIAÇÕES OBRIGATÓRIAS:\n1. Benefício direto e específico\n2. Numérico ('X passos/segredos/erros')\n3. Problema → Solução ('Pare de X e comece a Y')\n4. Identidade ('O guia para [perfil específico]')\n5. Curiosidade/Segredo revelado\n6. Transformação com prazo realista\n7. Contraste surpreendente\n8. Urgência com contexto real\n9. Especificidade máxima (método, número, resultado mensurável)\n10. Emocional/poético\n\nANÁLISE FINAL: ranking dos 3 mais promissores para o nicho + justificativa + sugestão de teste A/B."},
+{l:"Mapa de Conteúdo Completo do E-book (8 Capítulos)",f:"PAPEL: Você é arquiteto de conteúdo educacional especializado em estruturar e-books que criam transformação real no leitor.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Tema: [TEMA]\n→ Resultado prometido ao leitor: [TRANSFORMAÇÃO ESPECÍFICA]\n→ Nível do leitor: [Iniciante / Intermediário / Avançado]\n→ Extensão: [Compacto: 30-50p / Completo: 60-100p / Guia: 100+p]\n→ PÚBLICO-ALVO: [descreva com especificidade — afeta todos os exemplos e linguagem]\n→ FORMATO DE ENTREGA: [PDF simples / PDF interativo / curso / com áudio]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Sequência pedagógica real: cada capítulo deve construir sobre o anterior\n→ Não crie capítulos com promessas que o conteúdo não pode cumprir\n→ Exercícios: específicos e executáveis, não genéricos ('reflita sobre...')\n→ Verifique coerência interna: capítulo 1 não pode contradizer capítulo 7\n→ Todos os exemplos devem ser do universo do público informado\n\nPARA CADA UM DOS 8 CAPÍTULOS:\n→ Título atrativo e descritivo\n→ Objetivo pedagógico (o que o leitor entende ao terminar)\n→ Por que este capítulo vem nesta ordem\n→ Tópicos a cobrir (8-12 pontos específicos)\n→ Destaque: o conceito mais importante ou surpreendente\n→ Exercício prático: específico e executável em menos de 15 min\n→ CTA interno: o que o leitor deve fazer antes do próximo capítulo\n→ Extensão recomendada / Tom\n\nCAPÍTULO FINAL: integração, plano de ação, próximos passos.\n\nGUIA DE PRODUÇÃO:\n→ Ordem recomendada para escrever\n→ Estimativa de tempo por capítulo\n→ Fontes a pesquisar antes de cada parte"},
+{l:"Plano Estratégico de Lançamento Completo em 30 Dias",f:"PAPEL: Você é estrategista de lançamentos digitais especializado no mercado brasileiro de produtos de informação.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Tema: [TEMA] | Preço: R$[VALOR] | Plataforma: [Hotmart/Kiwify/etc.]\n→ Canal: [Instagram/WhatsApp/YouTube] | Audiência atual: [número]\n→ Orçamento para tráfego: R$[VALOR ou R$0]\n→ Bônus do lançamento: [LISTAR ou 'nenhum']\n→ PÚBLICO-ALVO: [descreva com especificidade]\n→ MAIOR OBJEÇÃO QUE VOCÊ JÁ OUVIU DO SEU PÚBLICO: [descreva]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO prometa resultados de vendas específicos\n→ Taxas de conversão: faixas realistas (1-3% lista fria; 5-15% lista quente) — variam muito\n→ Urgência e escassez: APENAS elementos reais — NÃO criar pressão falsa\n→ Ferramentas: MailerLite (free até 1k), ActiveCampaign (pago) — reais e verificadas\n→ NÃO sugerir criar depoimentos falsos\n\nFASE 1 — PRÉ-LANÇAMENTO (Dias 1-20):\n\nSEMANA 1 (Dias 1-7): AQUECIMENTO\n→ Tipo de conteúdo por dia com objetivo específico\n→ Como criar curiosidade sem revelar o produto\n→ Adaptado ao canal e público informados\n\nSEMANA 2 (Dias 8-14): LISTA DE ESPERA\n→ Landing page gratuita (MailerLite, ConvertKit)\n→ Lead magnet sugerido para o nicho específico\n→ Sequência de 3 e-mails de boas-vindas\n\nSEMANA 3 (Dias 15-20): GERAÇÃO DE DESEJO\n→ Conteúdo de bastidores e prova de qualidade\n\nFASE 2 — CARRINHO ABERTO (Dias 21-27):\nDia 21: sequência de posts hora a hora + e-mail de abertura completo\nDias 22-26: 1 conteúdo de valor/dia + 1 quebra de objeção/dia\nDia 27: comunicação de fechamento\n\nFASE 3 — PÓS-LANÇAMENTO (Dias 28-30):\n→ E-mail de entrega + como coletar depoimentos + evergreen\n\nMÉTRICAS: o que medir em cada fase e como interpretar"}
+]},
+{id:"afirmacoes",cat:"Afirmações Positivas",icon:"✨",color:"#e8c45b",bg:"rgba(232,196,91,0.1)",prompts:[
+{l:"50 Afirmações de Abundância + Neurociência + Sistema de Uso",f:"PAPEL: Você é psicólogo cognitivo-comportamental e coach com formação em Psicologia Positiva (Seligman, Csikszentmihalyi), especializado em afirmações terapêuticas com eficácia documentada.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [ex: empreendedoras de 30-45 anos que sabotam o próprio sucesso / homens com crença de que 'dinheiro é sujo' / profissionais liberais com síndrome da impostora / jovens de 20-28 anos com relação ansiosa com dinheiro]\n→ CRENÇA LIMITANTE CENTRAL DO PÚBLICO: [ex: 'não mereço ganhar bem' / 'dinheiro é difícil' / 'não sou bom o suficiente']\n→ TOM DESEJADO: [científico e racional / acolhedor e terapêutico / empoderador e direto]\n→ ÁREA DE ABUNDÂNCIA FOCO: [financeira / profissional / relacional / saúde / todas]\n→ VARIAÇÃO OBRIGATÓRIA: gere afirmações para os 3 subgrupos do público informado — não afirmações únicas genéricas\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO afirme que afirmações 'atraem dinheiro' como ciência\n→ Embase em: autoeficácia (Bandura), identidade de crescimento (Dweck), viés de negatividade (Baumeister) — verificáveis genericamente\n→ MENCIONE: pesquisa de Joanne Wood (2009) — afirmações positivas em pessoas com baixa autoestima podem ter efeito reverso\n→ Diferencie: afirmações de identidade ('Sou alguém que...') vs resultado ('Sou rico') — explicar por que identidade é mais eficaz\n→ ADAPTE vocabulário ao perfil e à crença limitante informados\n\nINTRODUÇÃO CIENTÍFICA (250 palavras) — tom adaptado ao público:\n→ Mecanismo real das afirmações\n→ As 4 condições: credulidade mínima, especificidade, emoção, repetição\n→ Exemplo de afirmação ineficaz vs eficaz para o público específico informado\n\nPROTOCOLO DE USO — adaptado à rotina do público:\n→ Quando / Como / Técnica da distância do 'eu' (Kross — verificável genericamente)\n\n50 AFIRMAÇÕES EM 5 CATEGORIAS — todas adaptadas à crença limitante central:\n1. IDENTIDADE FINANCEIRA (10) — começam com 'Sou alguém que...'\n2. RESIGNIFICANDO A CRENÇA CENTRAL (10) — específicas para a crença informada, não genéricas\n3. AÇÃO E DISCIPLINA (10)\n4. GRATIDÃO PRESENTE (10)\n5. VISÃO DE FUTURO REALISTA (10)\n\nEXERCÍCIO FINAL: como criar afirmação personalizada em 3 passos com critérios científicos."},
+{l:"Programa Completo: 21 Dias de Afirmações com Ritual Diário",f:"PAPEL: Você é desenvolvedor de programas de transformação pessoal com formação em psicologia comportamental e teoria de formação de hábitos.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [descreva com especificidade — ex: mulheres em retomada pós-divórcio / homens em transição de carreira / adolescentes com autoestima baixa]\n→ ÁREA DE VIDA FOCO: [autoestima / finanças / relacionamentos / carreira / saúde]\n→ MAIOR RESISTÊNCIA DO PÚBLICO: [ex: 'isso é coisa de autoajuda, não funciona' / 'não tenho tempo' / 'me sinto ridículo falando sozinho']\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ '21 dias': estrutura motivacional, não promessa científica — Lally et al. (2010, UCL): 18 a 254 dias\n→ NÃO prometa 'transformação garantida'\n→ Cada dia: propósito real e diferente — não repetição mecânica\n→ Sistema baseado em: auto-monitoramento e self-compassion check-in reais\n→ RESPONDA à maior resistência do público na introdução\n\nINTRODUÇÃO (200 palavras): como usar, expectativas realistas, como lidar com dias difíceis sem abandonar.\n\nSEMANA 1 — CONHECER E RECONHECER (Dias 1-7):\nTema: identificar crenças atuais ANTES de plantar novas.\nPara cada dia — CONTEÚDO COMPLETO:\n→ Tema do dia específico, não genérico\n→ Afirmação principal com análise de por que foi formulada assim\n→ Ritual de 5 minutos: passo a passo detalhado\n→ 2 perguntas de journaling conectadas à área foco informada\n→ Desafio do dia: 1 ação pequena alinhada com a afirmação\n\nSEMANA 2 — QUESTIONAR E RESIGNIFICAR (Dias 8-14): crenças limitantes, afirmações mais profundas.\n\nSEMANA 3 — INCORPORAR E AGIR (Dias 15-21): afirmações integradas a comportamentos específicos.\n\nDIA 21: ritual de encerramento + como criar próximo ciclo.\n\nSISTEMA DE ACOMPANHAMENTO:\n→ Tracker visual descrito em detalhe\n→ Como avaliar progresso sem perfeccionismo"},
+{l:"Capítulo Científico: Como Afirmações Funcionam no Cérebro",f:"PAPEL: Você é neurocientista cognitivo e divulgador científico especializado em psicologia da linguagem e bases neurais da mudança de comportamento.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: leitor cético que precisa de evidências / praticante que quer entender o mecanismo / terapeuta buscando embasamento]\n→ TOM: [científico rigoroso / popular e empolgante / equilibrado]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — CRÍTICAS:\n→ NUNCA invente estudos, pesquisadores ou números específicos de resultados\n→ Para pesquisas de alta certeza: citar genericamente com 'Pesquisas de [pesquisador] indicam...'\n→ MENCIONE a pesquisa de Wood et al. (2009): afirmações podem ter efeito reverso em pessoas com baixa autoestima — é verificável e importante\n→ Diferencie: hipótese em investigação vs consenso mais robusto\n→ NÃO afirme que afirmações 'reprogramam o cérebro' como fato absoluto\n\nMínimo 1.200 palavras. ESTRUTURA:\n\nSEÇÃO 1 — O CÉREBRO E A LINGUAGEM INTERNA (300 palavras):\n→ Como o self-talk é processado\n→ Por que o cérebro não distingue completamente imaginação de experiência real\n→ Self-talk negativo: impacto documentado\n\nSEÇÃO 2 — NEUROPLASTICIDADE E REPETIÇÃO (300 palavras):\n→ Definição precisa de neuroplasticidade\n→ Regra de Hebb — verificável, citar como tal\n→ Por que a mudança é lenta: semanas/meses, não dias\n\nSEÇÃO 3 — POR QUE AFIRMAÇÕES NÃO FUNCIONAM (250 palavras):\n→ Pesquisa de Wood et al. (2009): quando e por que pioram\n→ Credulidade mínima necessária\n→ Afirmações de processo vs resultado: diferença de eficácia\n\nSEÇÃO 4 — COMO TORNAR EFICAZES (350 palavras):\n→ 7 princípios baseados em psicologia cognitiva\n→ Técnica de distanciamento do 'eu' (Kross — verificável)\n→ Exemplos concretos: ineficaz vs eficaz, com análise\n\nCONCLUSÃO: o que a ciência pode e não pode concluir + convite para a prática com expectativas realistas."},
+{l:"40 Afirmações para Autoestima com Dimensões de Vida e Ritual",f:"PAPEL: Você é psicóloga clínica com especialização em autoestima, imagem corporal e psicologia feminista, e formação em TCC e autocompaixão de Kristin Neff.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO ESPECÍFICO: [ex: mulheres de 30-45 anos em cargos de liderança / adolescentes de 15-18 anos com pressão escolar / mulheres em retomada pós-separação / mães com culpa do cuidado]\n→ DIMENSÃO MAIS CRÍTICA PARA O PÚBLICO: [corpo e aparência / competência profissional / relacionamentos / autocuidado]\n→ VARIAÇÃO OBRIGATÓRIA: gere afirmações em 3 tons distintos para o mesmo público: [direto e empoderador / suave e acolhedor / reflexivo e questionador]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E SENSIBILIDADE:\n→ Linguagem inclusiva: não pressuponha corpo, orientação sexual ou estrutura familiar específica\n→ NÃO reduza autoestima a aparência física\n→ EVITE: afirmações hiperbólicas que podem ativar rejeição ('Sou perfeita todos os dias') — use progressivas ('Estou aprendendo a me ver com mais gentileza')\n→ NÃO prescreva como tratamento de transtornos diagnosticados\n→ Inclua nota sobre quando buscar apoio profissional\n\nINTRODUÇÃO (150 palavras):\n→ Diferença entre autoestima real e imagem positiva performática\n→ Por que autoestima é multidimensional\n→ Como usar com gentileza\n\n40 AFIRMAÇÕES EM 5 DIMENSÕES (8 cada):\n1. CORPO E PRESENÇA — celebrar como instrumento, não objeto\n2. CAPACIDADE E INTELIGÊNCIA — combater síndrome da impostora\n3. RELACIONAMENTOS E LIMITES — merecimento + capacidade de estabelecer limites\n4. CARREIRA E PROPÓSITO — quebrar crenças de gênero internalizadas\n5. AUTOCUIDADO SEM CULPA — permissão para se priorizar\n\nRITUAL DE PRÁTICA (15 min):\nPasso 1: leitura em voz alta no espelho\nPasso 2: identificar qual afirmação causou resistência (sinal de onde trabalhar)\nPasso 3: journaling de 5 min sobre essa afirmação\nPasso 4: 1 ação gentil para consigo hoje\n\nNOTA DE CUIDADO: quando a autoestima muito baixa indica necessidade de apoio profissional."},
+{l:"E-book Completo de Afirmações: Estrutura Editorial Pronta para Publicar",f:"PAPEL: Você é editor de produtos de transformação pessoal com experiência em e-books de desenvolvimento pessoal no mercado brasileiro.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [descreva com especificidade]\n→ TEMA CENTRAL DAS AFIRMAÇÕES: [abundância / autoestima / relacionamentos / saúde / propósito / mix]\n→ DIFERENCIAL DO SEU E-BOOK vs concorrentes: [o que você tem que outros não têm]\n→ EXTENSÃO DESEJADA: [compacto 30-40p / completo 60-80p / guia completo 100+p]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Embase benefícios em linguagem de evidência, não certeza absoluta\n→ Afirmações específicas e ricas — não genéricas: 'Sou feliz' é fraca; 'Escolho perceber o que há de valioso em cada experiência, mesmo nas difíceis' é forte\n→ Disclaimers de saúde mental em locais estratégicos\n→ Progressão real: básico ao avançado\n\nESTRUTURA EDITORIAL COMPLETA:\n\nCAPA E MARKETING:\n→ Título principal + 3 variações de subtítulo para o público informado\n→ Taglines para redes sociais (3 opções)\n→ Texto de contracapa (150 palavras)\n\nPÁGINAS INICIAIS (texto completo):\n→ Disclaimer de saúde mental completo\n→ Carta da autora (150 palavras + espaço para personalizar)\n→ Como usar + sistema de prática recomendado\n→ Por que afirmações funcionam (1 página com base científica)\n\n6 CAPÍTULOS TEMÁTICOS (para cada: título, 10 afirmações + mini-prática de 5 min):\n→ Cap. 1-6: adaptados ao tema central informado\n\nCAPÍTULO BÔNUS — AFIRMAÇÕES DE EMERGÊNCIA:\n20 afirmações para momentos de crise emocional aguda\n\nPROGRAMA DE 30 DIAS: tabela completa com afirmação + tema + ação por dia\n\nSEÇÃO FINAL:\n→ Como criar suas próprias afirmações: guia em 5 passos\n→ Tracker de 30 dias descrito em detalhe\n→ Recursos adicionais verificados"}
+]},
+{id:"vendas",cat:"Scripts de Vendas",icon:"💰",color:"#e8725a",bg:"rgba(232,114,90,0.1)",prompts:[
+{l:"Página de Vendas Long Copy Completa",f:"PAPEL: Você é copywriter sênior especializado em páginas de vendas de produtos digitais no Brasil, com domínio de AIDA, PAS e persuasão ética.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Nome do e-book: [NOME] | Tema: [TEMA] | Preço: R$[VALOR]\n→ PÚBLICO-ALVO ESPECÍFICO: [ex: mulheres de 35-50 em cargos de liderança esgotadas / homens de 28-40 querendo abrir negócio]\n→ PRINCIPAL DOR EMOCIONAL (não superficial): [ex: 'sinto que estou sempre atrás, nunca suficiente']\n→ DESEJO PROFUNDO: [ex: 'quero ser a pessoa que as outras respeitam']\n→ SITUAÇÃO DE VIDA ATUAL DO AVATAR: [ex: casada, 2 filhos, trabalha 8h/dia]\n→ 3 OBJEÇÕES QUE VOCÊ JÁ OUVIU: [liste as reais]\n→ Bônus: [LISTAR] | Garantia: [X dias / não tem] | Autor/a: [NOME]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E ÉTICA:\n→ NÃO crie escassez ou urgência FALSA\n→ NÃO invente depoimentos — marque onde inserir os reais\n→ TODA linguagem de identificação deve espelhar o público ESPECÍFICO informado\n→ As 3 objeções informadas DEVEM ser respondidas na página\n→ Disclaimer obrigatório: 'Resultados individuais podem variar.'\n\nESTRUTURA COMPLETA:\n\n[HERO] Headline + subheadline linguagem espelhando o público específico\n[IDENTIFICAÇÃO] 3 parágrafos espelhando as dores emocionais informadas — não generalidades\n[AGITAÇÃO] Consequências baseadas na situação de vida informada\n[TRANSIÇÃO] História de origem [espaço para personalizar]\n[SOLUÇÃO] Apresentação do e-book + diferencial vs conteúdo gratuito\n[O QUE ESTÁ DENTRO] Capítulos + bônus com benefício de cada\n[PROVA SOCIAL] [INSERIR DEPOIMENTOS REAIS]\n[OFERTA] Itemização + preço + garantia + CTA\n[Q&A] As 3 objeções informadas + 7 objeções adicionais comuns do nicho\n[CTA FINAL] Resumo da transformação + urgência real\n[RODAPÉ] Disclaimer completo"},
+{l:"Sequência Completa de 7 E-mails de Lançamento",f:"PAPEL: Você é especialista em e-mail marketing e lançamentos de produtos digitais no Brasil.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Nome do e-book: [NOME] | Tema: [TEMA]\n→ Preço de lançamento: R$[VALOR] | Preço normal: R$[VALOR se houver]\n→ Bônus + prazo real: [LISTAR + DATA]\n→ PÚBLICO-ALVO: [descreva com especificidade]\n→ MAIOR DOR DO PÚBLICO QUE O E-BOOK RESOLVE: [seja específico]\n→ PRINCIPAL OBJEÇÃO ESPERADA: [descreva]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E ÉTICA:\n→ Urgência e escassez: APENAS elementos reais\n→ [PRIMEIRO NOME] indicado onde personalizar\n→ NÃO usar culpa ou vergonha para forçar compra\n→ Cada e-mail deve entregar valor genuíno mesmo para quem não comprar\n→ Linhas de assunto: evitar palavras de spam (GRÁTIS!!, URGENTE)\n\nPARA CADA UM DOS 7 E-MAILS — CONTEÚDO COMPLETO:\n\nE-MAIL 1 — DIA 1: ANÚNCIO + HISTÓRIA\nAssunto (3 variações) / pré-header / corpo completo (300-400 palavras) — abertura pessoal, história de origem, CTA suave.\n\nE-MAIL 2 — DIA 2: O PROBLEMA REAL\nCorpo: aprofunda a dor emocional do público informado — não generalidade.\n\nE-MAIL 3 — DIA 3: CONTEÚDO GRATUITO + PREVIEW\nCorpo: entrega 1 insight real do e-book como isca de qualidade.\n\nE-MAIL 4 — DIA 4: PROVA SOCIAL\nCorpo com [ESPAÇO PARA DEPOIMENTOS REAIS] + texto de transição.\n\nE-MAIL 5 — DIA 5: QUEBRA DE OBJEÇÕES\nCorpo: a objeção principal informada respondida em formato de história pessoal.\n\nE-MAIL 6 — DIA 6: URGÊNCIA REAL\nCorpo: recapitula bônus com prazo real, o que se perde após a data.\n\nE-MAIL 7A — DIA 7 MANHÃ: ÚLTIMO DIA\nE-MAIL 7B — DIA 7 TARDE: ÚLTIMO AVISO\nAmbos completos — tom direto, humano, sem desespero.\n\nMÉTRICAS POR E-MAIL: taxa de abertura esperada com aviso de grande variação por nicho."},
+{l:"Script Completo de VSL — Vídeo de Vendas de 12 Minutos",f:"PAPEL: Você é roteirista especializado em Video Sales Letters (VSL) para produtos de informação no Brasil.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Nome do e-book: [NOME] | Tema: [TEMA] | Preço: R$[VALOR]\n→ PÚBLICO ESPECÍFICO: [quem é, faixa etária, contexto de vida]\n→ Maior dor: [DOR EMOCIONAL PROFUNDA, não superficial]\n→ Maior desejo: [DESEJO DE IDENTIDADE, não material]\n→ Sua credencial: [por que você pode ajudar — seja específico]\n→ VARIAÇÃO DE GANCHO: gere 3 versões do gancho inicial:\n  A) baseado na dor mais intensa do público\n  B) baseado na identidade desejada do público\n  C) baseado em uma contradição ou contra-intuitivo do nicho\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E ÉTICA:\n→ Resultados: representativos, não apenas os melhores casos — incluir 'resultados variam'\n→ NÃO atribuir falas a celebridades ou pessoas públicas reais\n→ Urgência: apenas se real e justificada\n→ Disclaimer de resultado antes do CTA final\n\nROTEIRO COMPLETO:\n\nNOTA DE PRODUÇÃO: tom, velocidade, vestuário, fundo, iluminação mínima.\n\n[0:00-0:30] GANCHO — as 3 versões geradas, marcadas para o criador escolher\n[0:30-2:00] IDENTIFICAÇÃO — espelhamento do estado atual do espectador usando o contexto de vida informado\n[2:00-4:00] AGITAÇÃO — consequências reais baseadas na situação do público\n[4:00-5:30] CREDENCIAIS E HISTÓRIA DE ORIGEM [espaço para personalizar com história real]\n[5:30-8:00] APRESENTAÇÃO DA SOLUÇÃO — tour pelos capítulos narrado\n[8:00-9:30] PROVA SOCIAL [espaço para depoimentos reais] + texto de transição\n[9:30-11:00] OFERTA COMPLETA — o que está incluído, preço, justificativa\n[11:00-12:00] CTA + ENCERRAMENTO + disclaimer"},
+{l:"Guia Completo: 15 Objeções com Scripts de Resposta",f:"PAPEL: Você é especialista em vendas consultivas com experiência em criar scripts de objeção para produtos de informação no mercado brasileiro.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ TEMA DO SEU E-BOOK: [TEMA]\n→ PÚBLICO: [descreva com especificidade]\n→ PREÇO: R$[VALOR]\n→ AS 3 OBJEÇÕES QUE VOCÊ MAIS OUVE: [liste as reais — estas devem ter resposta mais elaborada]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO E ÉTICA:\n→ Respostas honestas: se a objeção tem fundamento real, reconheça antes de responder\n→ NÃO pressionar, manipular ou criar culpa para forçar compra\n→ NÃO prometer o que o produto não entrega para superar a objeção\n→ Scripts: tom humano e conversacional, não corporativo\n→ Inclua para cada objeção: quando a resposta correta é 'este produto pode não ser para você'\n\nPARA CADA UMA DAS 15 OBJEÇÕES:\n→ O que o cliente diz (frase exata comum)\n→ O que está por baixo (crença ou medo real)\n→ Abordagem correta (estratégia)\n→ Script DM/WhatsApp (texto conversacional completo)\n→ Script comentário público (2-3 frases)\n→ Quando não responder ou aceitar que não é seu cliente\n\nAS 15 OBJEÇÕES:\n1. 'Está caro' / 'Não tenho dinheiro agora'\n2. 'Vou pensar e te falo' / 'Deixa pra depois'\n3. 'Isso não funciona pra mim' / 'Meu caso é diferente'\n4. 'Tem muito conteúdo gratuito sobre isso'\n5. 'Não tenho tempo para ler'\n6. 'Como sei que é de qualidade?' / 'Nunca ouvi falar de você'\n7. 'Vou esperar a próxima promoção'\n8. 'Já tentei coisas assim antes e não funcionou'\n9. 'Tenho que ver com meu marido/esposa'\n10. 'É muita informação de uma vez'\n11. 'Vou aprender no YouTube de graça'\n12. 'Não sei se vou conseguir aplicar'\n13. 'Tenho medo de não gostar e perder o dinheiro'\n14. 'Vou esperar ver se funciona para outros'\n15. Silêncio após demonstrar interesse\n\nBÔNUS: como identificar qual objeção está por trás do silêncio + script de reativação gentil."},
+{l:"Roteiro Completo de Stories de Venda (7 Dias de Lançamento)",f:"PAPEL: Você é estrategista de conteúdo para Instagram especializado em funis de venda via Stories.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ Tema: [TEMA] | Preço: R$[VALOR] | Você é: [QUEM/CREDENCIAL]\n→ Bônus: [LISTAR] | Prazo real: [DATA]\n→ PÚBLICO-ALVO: [descreva com especificidade — afeta linguagem e exemplos de todos os stories]\n→ MAIOR DOR DO PÚBLICO: [específica]\n→ VARIAÇÃO DE FORMATO: para cada dia, gere 2 versões do story principal: uma mais emocional/pessoal e outra mais objetiva/informativa\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Stories de valor vs venda: proporção mínima 60/40\n→ Urgência real: indicar claramente o que é prazo real\n→ Depoimentos: apenas reais — marcar onde inserir\n→ NÃO sugerir criar falsa escassez\n\nFORMATO PARA CADA STORY:\nVisual: [o que aparece na tela]\nFala/texto: [script exato ou texto para tela]\nSticker: [enquete/caixa de perguntas/link]\nObjetivo: [o que faz na jornada]\nCTA: [ação solicitada se houver]\nVERSÃO EMOCIONAL: [alternativa pessoal]\nVERSÃO OBJETIVA: [alternativa direta]\n\nDIA 1 — TEASER E CURIOSIDADE (5 stories)\nDIA 2 — IDENTIFICAÇÃO COM O PROBLEMA (4 stories) — linguagem do público específico\nDIA 3 — CONTEÚDO GRATUITO DE VALOR (5 stories)\nDIA 4 — REVELAÇÃO DO E-BOOK (6 stories)\nDIA 5 — PROVA SOCIAL (4 stories) [espaço para depoimentos reais]\nDIA 6 — QUEBRA DE OBJEÇÕES (5 stories) — caixa de perguntas + respostas\nDIA 7 — URGÊNCIA E FECHAMENTO (6 stories) — manhã + tarde + noite"}
+]},
+{id:"drop",cat:"Guia de Dropshipping",icon:"📦",color:"#4ecb8d",bg:"rgba(78,203,141,0.1)",prompts:[
+{l:"Capítulos 1-3: O Que É, Como Funciona e Produtos Vencedores",f:"PAPEL: Você é empreendedor digital com experiência real em dropshipping e educador honesto sobre o modelo.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [ex: universitários de 18-25 com pouco capital / profissionais CLT de 28-40 querendo renda extra / mães que querem trabalhar em casa / desempregados em transição de carreira]\n→ CAPITAL INICIAL DISPONÍVEL: [ex: R$300-500 / R$500-1.500 / R$1.500-5.000]\n→ DISPONIBILIDADE DE TEMPO: [ex: 2-3h por dia após trabalho / integral / fins de semana]\n→ MAIOR MEDO DO PÚBLICO: [ex: perder dinheiro / não ter conhecimento técnico / não ter tempo]\n→ MODELO PREFERIDO: [nacional / internacional / ambos]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO prometa faturamentos em prazos específicos\n→ MENCIONE: 'A maioria das pessoas que testa desiste nas primeiras 4-8 semanas — é um negócio real'\n→ Adapte exemplos, capital e desafios ao perfil específico informado\n→ Responda diretamente ao maior medo do público na introdução\n→ Plataformas: apenas verificadas — Shopify, Yampi, Nuvemshop\n\nCAPÍTULO 1 — O QUE É DROPSHIPPING DE VERDADE (800 palavras):\n→ Abertura que fala com o perfil informado\n→ Definição precisa e ciclo financeiro\n→ Tabela comparativa honesta vs alternativas relevantes para o público\n→ 5 mitos desmontados com linguagem do público informado\n\nCAPÍTULO 2 — A ESTRUTURA DO NEGÓCIO (700 palavras):\n→ 5 pilares adaptados à escala inicial do público\n→ Investimento inicial realista para o capital informado\n→ Checklist de 15 itens antes de colocar R$1 em anúncio\n\nCAPÍTULO 3 — PRODUTOS VENCEDORES (800 palavras):\n→ 6 critérios objetivos com exemplos dentro do orçamento do público\n→ Ferramentas gratuitas + pagas para o capital disponível\n→ Erros mais comuns do perfil informado"},
+{l:"Capítulo Completo: Tráfego Pago no Meta Ads para Dropshipping",f:"PAPEL: Você é gestor de tráfego especializado em Meta Ads para e-commerce e dropshipping.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NÍVEL DO LEITOR: [nunca abriu o Gerenciador / já tentou mas perdeu dinheiro / intermediário]\n→ ORÇAMENTO MENSAL DISPONÍVEL: [ex: R$300-600 / R$600-1.500 / R$1.500+]\n→ NICHO DE DROPSHIPPING: [ex: produtos de beleza / utilidades domésticas / fitness / nicho específico]\n→ PRINCIPAL ERRO COMETIDO ANTES: [ex: escolheu objetivo errado / não tinha pixel / não testou criativos]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Gerenciador de Anúncios do Meta muda constantemente — alertar e recomendar Help Center oficial (business.facebook.com/help)\n→ Custos: variam enormemente — faixas com aviso de variação por nicho\n→ Orçamentos abaixo de R$500-800/mês raramente geram dados estatisticamente relevantes para decisão — ser honesto\n→ NÃO prometer que seguir a estrutura garante lucro\n→ Adapte recomendações ao orçamento e nível informados\n\nMínimo 1.500 palavras. ESTRUTURA:\n\nSEÇÃO 1 — FUNDAMENTOS (300 palavras):\nEstrutura hierárquica / Pixel: instalação e verificação / Período de aprendizado\n\nSEÇÃO 2 — ESTRUTURA DE CAMPANHA PARA TESTE (400 palavras):\nObjetivo correto / CBO vs ABO / Público de teste para o nível informado / Orçamento de teste adaptado ao capital disponível / Criativos mínimos\n\nSEÇÃO 3 — INTERPRETANDO OS DADOS (400 palavras):\nKPIs com definição precisa: CPM, CTR, CPC, ATC, taxa de conversão, CPA, ROAS\nQuando pausar / quando escalar (critérios quantitativos, não emocionais)\n\nSEÇÃO 4 — CRIATIVOS (300 palavras):\nEstrutura de vídeo para produtos / UGC de baixo custo / CapCut, Canva\n\nGLOSSÁRIO: 20 termos com definição precisa e uso prático"},
+{l:"Capítulo Completo: Loja Shopify do Zero ao Checkout",f:"PAPEL: Você é especialista em e-commerce com experiência em criar e otimizar lojas Shopify para dropshipping no Brasil.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NÍVEL DO LEITOR: [nunca criou loja / já tentou / intermediário]\n→ MODELO: [nacional / internacional / ambos]\n→ NICHO: [ex: beleza / moda / utilidades / fitness]\n→ ORÇAMENTO PARA LOJA: [gratuito/básico / intermediário com apps pagos]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Shopify atualiza interface regularmente — alertar e recomendar help.shopify.com\n→ Preços dos planos: aproximados em dólares — verificar shopify.com/br para valores atuais em reais\n→ Shopify Payments NÃO está disponível no Brasil — mencionar alternativas reais: PagSeguro, Mercado Pago\n→ Apps: apenas reais verificáveis na Shopify App Store\n→ NÃO afirmar que tema ou app 'garante' conversão maior\n\nSEÇÃO 1 — ESCOLHENDO A PLATAFORMA (200 palavras):\nShopify vs Yampi vs Nuvemshop — comparativo honesto para dropshipping brasileiro.\n\nSEÇÃO 2 — CONFIGURAÇÃO INICIAL (400 palavras):\nCriação de conta / Escolha de tema / Configurações essenciais / Páginas obrigatórias no Brasil\n\nSEÇÃO 3 — PÁGINA DE PRODUTO QUE CONVERTE (400 palavras):\nTítulo / Descrição: benefício → features → uso / Fotos e vídeos / Avaliações (com avisos de autenticidade) / Preço e âncora\n\nSEÇÃO 4 — APPS ESSENCIAIS POR CATEGORIA (300 palavras):\nFulfillment / Conversão / E-mail marketing / Análise — função + quando instalar + custo aproximado\n\nSEÇÃO 5 — PAGAMENTOS BRASILEIROS (300 palavras):\nPor que Shopify Payments não está disponível / Alternativas reais / PIX, cartão, boleto\n\nCHECKLIST PRÉ-LANÇAMENTO: 30 itens verificados antes de receber o primeiro pedido"},
+{l:"Capítulo: Atendimento ao Cliente e Gestão de Crises",f:"PAPEL: Você é especialista em customer success em e-commerce, com experiência nos desafios específicos do dropshipping.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ MODELO DO LEITOR: [nacional / internacional / ambos]\n→ VOLUME ESPERADO: [pequeno 0-30 pedidos/mês / médio 30-150 / grande 150+]\n→ PRINCIPAL RECEIO DO PÚBLICO: [ex: cliente furioso / chargeback / produto errado em escala]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — DIREITO DO CONSUMIDOR:\n→ CDC: lojista é responsável perante o consumidor mesmo em dropshipping\n→ Direito de arrependimento: 7 dias corridos após recebimento (art. 49 CDC) — verificável\n→ Garantia legal por vício: 90 dias para produtos duráveis — verificável\n→ Para questões jurídicas específicas: sempre recomendar advogado\n→ Chargeback: explicar o processo real sem minimizar o risco\n\nMínimo 1.400 palavras. ESTRUTURA:\n\nSEÇÃO 1 — A REALIDADE DO ATENDIMENTO (200 palavras):\nPor que atendimento é o maior diferencial / Os 4 tipos de contato / Tempo de resposta realista\n\nSEÇÃO 2 — SCRIPTS DE ATENDIMENTO (500 palavras):\nA) 'Meu produto não chegou' — scripts para 3 estágios de atraso\nB) 'Produto veio errado ou danificado' — script + processo de solução\nC) 'Quero cancelar ou devolver' — dentro e fora do prazo legal\nD) 'O produto não é como na foto'\nE) 'Vou abrir disputa/chargeback' — tentativa de resolução\n\nSEÇÃO 3 — GESTÃO DE AVALIAÇÕES (300 palavras):\nComo responder avaliações negativas / O que NÃO fazer / Como pedir avaliações positivas eticamente\n\nSEÇÃO 4 — CRISES COM FORNECEDOR (300 palavras):\nComo identificar antes / O que fazer quando falha em escala / Plano B obrigatório\n\nSEÇÃO 5 — CHARGEBACK (200 palavras):\nProcesso real / Documentação protetora / Taxa aceitável\n\n5 TEMPLATES DE E-MAIL prontos para copiar."},
+{l:"Plano de Negócios com Projeção Financeira de 12 Meses",f:"PAPEL: Você é consultor de negócios digitais especializado em e-commerce e planejamento financeiro para pequenos empreendimentos no Brasil.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PERFIL DO LEITOR: [ex: primeira empresa / já tem CNPJ / CLT querendo empreender]\n→ CAPITAL INICIAL DISPONÍVEL: R$[VALOR]\n→ OBJETIVO: [renda extra parcial / substituir renda de CLT / escalar para 6 dígitos]\n→ NICHO EM MENTE: [ou 'ainda escolhendo']\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — CRÍTICAS PARA FINANÇAS:\n→ Projeções financeiras: SEMPRE em 3 cenários (conservador/moderado/otimista) — NUNCA como certeza\n→ DIFERENCIAR fortemente: faturamento bruto vs lucro líquido — iniciantes confundem\n→ MEI: verificar limite de faturamento atual em vigor\n→ Impostos: mencionar obrigatoriedade e recomendar contador especializado em e-commerce\n→ 'resultados variam' em toda projeção\n\nSEÇÃO 1 — SUMÁRIO EXECUTIVO: template para preencher.\n\nSEÇÃO 2 — ANÁLISE DE MERCADO: framework de pesquisa para o leitor fazer.\n\nSEÇÃO 3 — MODELO OPERACIONAL:\nFluxo operacional diário / Ferramentas e custos / Quando contratar ajuda\n\nSEÇÃO 4 — PROJEÇÃO FINANCEIRA 12 MESES:\nInvestimento inicial itemizado (TUDO incluído, sem omitir) / Custos fixos mensais / Custos variáveis por venda / Margem bruta e líquida real / Ponto de equilíbrio: fórmula + exemplo / Projeção mês a mês em 3 cenários\n\nAVISO OBRIGATÓRIO: 'Esta projeção é ferramenta de planejamento. Resultados reais variam significativamente.'\n\nSEÇÃO 5 — CRONOGRAMA DE 90 DIAS: semana a semana, com objetivos específicos.\n\nSEÇÃO 6 — GESTÃO DE RISCOS: 5 riscos principais + plano de mitigação."}
+]},
+{id:"prod",cat:"Produtividade e Gestão de Tempo",icon:"⏰",color:"#90e85a",bg:"rgba(144,232,90,0.1)",prompts:[
+{l:"E-book de Produtividade: Capítulos 1 a 4 Completos",f:"PAPEL: Você é especialista em produtividade baseada em evidências, com formação em psicologia comportamental.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [ex: empreendedoras solo com múltiplos projetos / profissionais de saúde com jornadas longas / gestores de equipe sem tempo para trabalho próprio / freelancers com dificuldade de separar trabalho e vida]\n→ PRINCIPAL OBSTÁCULO: [ex: procrastinação / distrações digitais / falta de energia / excesso de reuniões / trabalho que invade a vida pessoal]\n→ FERRAMENTAS QUE JÁ USA: [Google Calendar / Notion / papel e caneta / nenhuma]\n→ CONTEXTO DE TRABALHO: [home office / escritório híbrido / plantões irregulares / múltiplos clientes]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ GTD (David Allen), Time Blocking (Cal Newport), Pomodoro (Francesco Cirillo, 1987) — verificáveis, citar como tal\n→ Promessas realistas: 'pode melhorar significativamente', não 'triplicará sua produtividade'\n→ ADAPTE todos os exemplos ao contexto de trabalho informado\n→ Para home office: desafios específicos de fronteira trabalho/vida\n→ Para jornada irregular: não prescrever rotinas rígidas como solução universal\n\nCAPÍTULO 1 — REPENSANDO A PRODUTIVIDADE (600 palavras):\n→ Problema com o culto à ocupação — exemplificado com situações do público informado\n→ Multitarefa: base em pesquisa cognitiva\n→ Diagnóstico inicial: questionário de 10 perguntas adaptado ao contexto\n\nCAPÍTULO 2 — ENERGIA ANTES DE TEMPO (700 palavras):\n→ 4 reservatórios de energia — com exemplos do cotidiano do público informado\n→ Cronotipos e adaptação ao contexto real (ex: para plantões = impossível manter horário fixo)\n→ Exercício de mapeamento energético da semana\n\nCAPÍTULO 3 — CAPTURA E CLAREZA (600 palavras):\n→ Sistema de captura adaptado às ferramentas que o público já usa\n→ GTD de Allen (verificável): definição, árvore de decisão, processamento semanal\n→ Template completo de revisão semanal\n\nCAPÍTULO 4 — TIME BLOCKING NA PRÁTICA (700 palavras):\n→ Adaptado ao contexto de trabalho informado\n→ Como lidar com interrupções específicas do perfil\n→ O que fazer quando o dia desmorona (e sempre vai desmoronar)\n→ Template de semana para o contexto informado"},
+{l:"Capítulo Completo: Eliminando a Procrastinação com Ciência",f:"PAPEL: Você é psicólogo comportamental especializado em procrastinação, baseado nos trabalhos de Piers Steel ('The Procrastination Equation', 2010) e Timothy Pychyl (Carleton University).\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: empreendedores que sabotam o próprio sucesso / estudantes em prazos / criativos com bloqueio / profissionais com perfeccionismo paralisante]\n→ TIPO DOMINANTE DE PROCRASTINAÇÃO DO PÚBLICO: [perfeccionista / sobrecarregado / distraído / rebelde]\n→ CONTEXTO ESPECÍFICO: [ex: tarefas de trabalho / projetos pessoais / obrigações financeiras]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Piers Steel, 'The Procrastination Equation' (2010) — verificável\n→ A Fórmula de Steel: Utilidade = [Expectativa × Valor] / [Impulsividade × Atraso] — verificável\n→ Timothy Pychyl, Carleton University — verificável genericamente\n→ Gollwitzer e intenções de implementação (if-then) — verificável genericamente\n→ NÃO prometer 'eliminar para sempre' — é processo contínuo\n→ ADAPTE todos os exemplos e estratégias ao tipo dominante e contexto informados\n\nMínimo 1.400 palavras. ESTRUTURA:\n\nSEÇÃO 1 — O QUE É PROCRASTINAÇÃO DE VERDADE (250 palavras):\nNão é preguiça — é regulação emocional mal adaptada / Fórmula de Steel / Por que perfeccionistas procrastinam mais\n\nSEÇÃO 2 — OS 4 TIPOS (250 palavras):\nPerfeccionista / Sobrecarregado / Distraído / Rebelde + Teste rápido de identificação\n\nSEÇÃO 3 — NEUROCIÊNCIA (200 palavras):\nAmígdala e aversão emocional / Desconto hiperbólico / Como interromper o ciclo\n\nSEÇÃO 4 — ESTRATÉGIAS PRÁTICAS POR TIPO (400 palavras):\n3 estratégias específicas para cada tipo — adaptadas ao contexto informado / Intenções de implementação de Gollwitzer / Técnica dos 2 minutos\n\nSEÇÃO 5 — PROTOCOLO ANTI-PROCRASTINAÇÃO (300 palavras):\nRitual de início de 5 minutos / Design de ambiente / Autocompaixão vs autocrítica na superação\n\nEXERCÍCIO FINAL: mapa pessoal de procrastinação + plano de ação por tipo."},
+{l:"Guia de Planejamento Semanal com Templates Completos",f:"PAPEL: Você é especialista em produtividade executiva com background em psicologia positiva e metodologia GTD adaptada.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [descreva com especificidade]\n→ MAIOR DIFICULDADE COM PLANEJAMENTO: [ex: abandona após a segunda semana / planeja demais e executa pouco / não consegue lidar com imprevistos que quebram o plano]\n→ FERRAMENTAS DISPONÍVEIS: [Notion / Google Calendar / papel / nenhuma]\n→ CONTEXTO DE VIDA: [trabalho em horário fixo / horário livre / múltiplos projetos]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Shutdown ritual: atribuído a Cal Newport em 'Deep Work' — citar como tal\n→ NÃO afirmar que qualquer sistema funciona para todos — enfatizar personalização\n→ RESPONDA à maior dificuldade do público na introdução\n→ Todos os templates: adaptados ao contexto e ferramentas informadas\n\nINTRODUÇÃO (200 palavras):\nPor que planejamento semanal vs diário. Resposta direta à maior dificuldade informada.\n\nO RITUAL DE REVISÃO SEMANAL COMPLETO (600 palavras):\nEtapa 1: COLETA (10 min) — onde e o que coletar\nEtapa 2: PROCESSAMENTO (15 min) — o que fazer com cada item\nEtapa 3: REVISÃO DE PROJETOS (10 min) — status e próximas ações\nEtapa 4: PLANEJAMENTO (15 min) — alocar no calendário\nEtapa 5: INTENÇÃO SEMANAL (5 min) — 3 resultados-chave\n\nTEMPLATE DE PLANEJAMENTO SEMANAL (descrito em detalhe para criar nas ferramentas informadas):\n→ Cabeçalho / 3 resultados-chave / Projetos ativos + próxima ação / Calendário com blocos / Intenção pessoal\n\nSHUTDOWN RITUAL DIÁRIO (Cal Newport — 10 min):\nO que revisar / o que transferir / a frase de encerramento\n\nPERGUNTAS DE REVISÃO:\n→ 10 para reflexão profissional\n→ 10 para reflexão pessoal\n\nVERSÃO MÍNIMA DE 15 MIN para semanas caóticas."},
+{l:"Capítulo: Deep Work — Trabalho Profundo na Era das Distrações",f:"PAPEL: Você é especialista em produtividade cognitiva baseado em Cal Newport ('Deep Work', 2016, Georgetown University) e Csikszentmihalyi (flow).\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [ex: programadores / designers / escritores / consultores / professores]\n→ MAIOR DESAFIO PARA O DEEP WORK DO PÚBLICO: [ex: open space no escritório / notificações constantes / clientes esperando resposta imediata / home office com família]\n→ TIPO DE TRABALHO PROFUNDO QUE FAZEM: [analítico / criativo / estratégico]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Cal Newport e 'Deep Work' (2016), Georgetown University — verificável\n→ Flow de Csikszentmihalyi — verificável\n→ NÃO afirmar X horas de deep work como universal — varia por pessoa\n→ ADAPTE todos os exemplos ao tipo de trabalho e desafio informados\n\nMínimo 1.300 palavras. ESTRUTURA:\n\nSEÇÃO 1 — O QUE É DEEP WORK (200 palavras):\nDefinição precisa de Newport / Diferença deep vs shallow work com exemplos do público informado / Por que é raro e valioso\n\nSEÇÃO 2 — NEUROCIÊNCIA DO FOCO (250 palavras):\nMielinização e prática deliberada / Custo do context switching / Flow de Csikszentmihalyi / Por que interrupções têm custo desproporcional\n\nSEÇÃO 3 — AS 4 FILOSOFIAS DE NEWPORT (300 palavras):\nMonástica / Bimodal / Rítmica / Jornalística — qual escolher para o perfil informado\n\nSEÇÃO 4 — CRIANDO A PRÁTICA PARA O PÚBLICO INFORMADO (300 palavras):\nRitual de início / Duração ideal / Como lidar com o desafio específico informado / Shutdown ritual\n\nSEÇÃO 5 — ELIMINANDO DISTRAÇÕES (250 palavras):\nWillpower vs design de ambiente / Configurar ambiente para o contexto informado / Ferramentas de deep work\n\nEXERCÍCIO: projetando a primeira semana de deep work adaptada ao contexto informado."},
+{l:"Capítulo: A Ciência dos Hábitos para Produtividade",f:"PAPEL: Você é especialista em ciência comportamental baseado em BJ Fogg ('Tiny Habits', Stanford, 2019), James Clear ('Atomic Habits', 2018) e Charles Duhigg ('The Power of Habit', 2012).\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO: [descreva com especificidade]\n→ HÁBITO DE PRODUTIVIDADE QUE O PÚBLICO MAIS QUER CRIAR: [ex: acordar cedo / trabalhar sem distrações / fazer planejamento diário / exercitar-se]\n→ HÁBITO IMPRODUTIVO QUE O PÚBLICO MAIS QUER QUEBRAR: [ex: redes sociais em excesso / procrastinação crônica / responder e-mail a qualquer hora]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ BJ Fogg (Stanford), James Clear, Charles Duhigg — verificáveis, citar como tal\n→ Loop de hábito (cue-routine-reward) de Duhigg — verificável\n→ B=MAP de Fogg: Behavior = Motivation + Ability + Prompt — verificável\n→ 4 princípios de Clear: tornar óbvio / atraente / fácil / satisfatório — verificáveis\n→ Variabilidade individual: mencionar honestamente\n→ ADAPTE todos os exemplos ao hábito específico que o público quer criar/quebrar\n\nMínimo 1.300 palavras. ESTRUTURA:\n\nSEÇÃO 1 — COMO HÁBITOS FUNCIONAM (250 palavras):\nGânglios basais / Loop de hábito de Duhigg / Por que hábitos são difíceis de quebrar (e isso é bom)\n\nSEÇÃO 2 — OS 4 PRINCÍPIOS DE CLEAR APLICADOS AO HÁBITO DO PÚBLICO (300 palavras):\nCada princípio com exemplo do hábito específico informado\n\nSEÇÃO 3 — TINY HABITS DE FOGG PARA O HÁBITO DO PÚBLICO (250 palavras):\nB=MAP / Receita: 'Depois de [âncora], eu vou [comportamento minúsculo]' / A celebração / Exemplo concreto para o hábito informado\n\nSEÇÃO 4 — QUEBRANDO O HÁBITO IMPRODUTIVO (250 palavras):\nIdentificando gatilhos / Invertendo os 4 princípios de Clear para o hábito informado\n\nSEÇÃO 5 — EMPILHANDO HÁBITOS DE PRODUTIVIDADE (250 palavras):\nTemplate de morning routine / Template de shutdown routine / Como medir sem perfeccionismo\n\nEXERCÍCIO: projeto do primeiro hábito com método de Fogg adaptado ao público informado."}
+]},
+{id:"insta",cat:"Marketing no Instagram",icon:"📱",color:"#e878c8",bg:"rgba(232,120,200,0.1)",prompts:[
+{l:"Estratégia Completa de Conteúdo para 90 Dias",f:"PAPEL: Você é estrategista de marketing digital especializado em Instagram com conhecimento atualizado sobre algoritmo, tendências e estratégias orgânicas para 2025-2026.\n\n⚙️ PREENCHA TODOS OS CAMPOS:\n→ NICHO/NEGÓCIO: [ex: nutricionista funcional / e-commerce de joias artesanais / coach de carreira para mulheres 40+ / professor de inglês online]\n→ PÚBLICO-ALVO DO NEGÓCIO: [ex: mulheres de 35-50 preocupadas com saúde hormonal / jovens de 22-30 em início de carreira]\n→ OBJETIVO PRINCIPAL: [vendas / crescimento / autoridade / todos]\n→ TAMANHO ATUAL: [seguidores] | FREQUÊNCIA DISPONÍVEL: [posts/semana]\n→ PRODUTO/SERVIÇO: [O QUÊ]\n→ MAIOR DIFICULDADE ATUAL: [ex: não sei o que postar / posto mas não engaja / tenho seguidores mas não vendo]\n→ VARIAÇÃO OBRIGATÓRIA: gere exemplos de conteúdo em 3 formatos distintos para cada pilar — não apenas texto\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Algoritmo muda — estratégias revisadas trimestralmente\n→ NÃO prometer crescimento de seguidores específico\n→ TODOS os exemplos de conteúdo: específicos ao nicho informado\n→ Responda à maior dificuldade informada na abertura da estratégia\n\nPARTE 1 — DIAGNÓSTICO DO NICHO (300 palavras):\nO que está faltando vs o que funciona no nicho / Bio otimizada / Identidade visual\n\nPARTE 2 — PILARES DE CONTEÚDO ESPECÍFICOS PARA O NICHO (400 palavras):\n4-5 pilares + 3 exemplos de conteúdo por pilar (adaptados ao nicho informado, em 3 formatos diferentes)\n\nPARTE 3 — FORMATOS POR OBJETIVO (300 palavras):\nQual formato gera mais resultado para este nicho específico / Proporção semanal\n\nPARTE 4 — PLANO DE 90 DIAS (600 palavras):\nFase 1 (1-30 dias): construção — tipos de conteúdo para o nicho\nFase 2 (31-60 dias): crescimento — estratégias para o público informado\nFase 3 (61-90 dias): conversão — funil orgânico para o produto específico"},
+{l:"Guia Completo de Reels: Roteiro, Produção e Análise",f:"PAPEL: Você é especialista em criação de Reels para Instagram com experiência em produção de vídeos curtos que geram alcance orgânico e conversão.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NICHO: [ex: saúde e bem-estar / negócios / culinária / moda / educação]\n→ PERFIL DO CRIADOR: [só rosto / apresentação / voice-over / produto / misto]\n→ OBJETIVO DOS REELS: [alcance / engajamento / vendas / autoridade]\n→ VARIAÇÃO OBRIGATÓRIA DE GANCHO: para cada tipo de Reel, gere 3 versões distintas do gancho inicial — uma baseada em dor, uma em curiosidade, uma em identidade\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Algoritmo muda — estratégias revisadas regularmente\n→ Viralização: NÃO é garantida por seguir qualquer fórmula — mencionar variabilidade\n→ Áudios em alta: ensinar como encontrar em tempo real, não listar\n→ Alcance orgânico: expectativas realistas\n→ Adapte todos os exemplos ao nicho informado\n\nMínimo 1.500 palavras. ESTRUTURA:\n\nSEÇÃO 1 — POR QUE REELS IMPORTA (200 palavras):\nPosição no ecossistema atual / Comparativo com outros formatos para alcance orgânico\n\nSEÇÃO 2 — ANATOMIA DE UM REEL QUE PERFORMA (400 palavras):\nOs 3 primeiros segundos: 3 versões distintas de gancho para o nicho informado / Retenção vs alcance / O loop / Legendas / CTA / Thumbnail\n\nSEÇÃO 3 — ROTEIRIZAÇÃO COMPLETA (400 palavras):\nFramework: Gancho → Desenvolvimento → Virada → CTA\nTemplates para 3 tipos — adaptados ao nicho informado:\nA) Educativo / B) Opinião ou reflexão / C) Bastidor ou entretenimento\nExercício: como roteirizar em 10 minutos\n\nSEÇÃO 4 — PRODUÇÃO COM CELULAR (300 palavras):\nEquipamento mínimo real / Configurações de câmera / Apps de edição comparados / 3 erros mais comuns\n\nSEÇÃO 5 — DISTRIBUIÇÃO E ANÁLISE (200 palavras):\nMelhor horário: como descobrir o seu / Hashtags em 2025-2026 / Métricas que importam de verdade"},
+{l:"Capítulo: Instagram Ads para Pequenos Orçamentos",f:"PAPEL: Você é gestor de tráfego especializado em Instagram e Facebook Ads para pequenos negócios com orçamentos de R$300-R$2.000/mês.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NICHO DO NEGÓCIO: [específico]\n→ ORÇAMENTO MENSAL: [R$300-600 / R$600-1.200 / R$1.200-2.000]\n→ OBJETIVO: [vendas de produto físico / digital / serviço / geração de leads]\n→ NÍVEL DO LEITOR: [nunca usou / já perdeu dinheiro / intermediário]\n→ MAIOR ERRO JÁ COMETIDO: [ex: impulsionou post / escolheu objetivo errado / não tinha pixel]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Gerenciador do Meta muda — alertar e recomendar Help Center oficial\n→ Custos: variam enormemente — faixas com aviso de variação\n→ Orçamentos abaixo de R$500-800/mês raramente geram dados estatisticamente válidos — ser honesto\n→ NÃO prometer resultados de campanha\n→ Adapte orçamentos e estrutura ao nível e objetivo informados\n\nMínimo 1.400 palavras. ESTRUTURA:\n\nSEÇÃO 1 — ANTES DO PRIMEIRO ANÚNCIO (300 palavras):\nPor que 80% perdem dinheiro / 3 pré-requisitos inegociáveis / Diferença impulsionar vs Gerenciador\nResposta direta ao maior erro informado\n\nSEÇÃO 2 — ESTRUTURA PARA O ORÇAMENTO INFORMADO (400 palavras):\nObjetivo correto para o objetivo informado / CBO vs ABO para iniciantes / Público adaptado ao orçamento / Criativos mínimos para teste válido\n\nSEÇÃO 3 — CRIATIVOS COM ORÇAMENTO LIMITADO (400 palavras):\nPor que criativo > segmentação / Vídeo vs imagem vs carrossel para o nicho / UGC de baixo custo / Canva, CapCut\n\nSEÇÃO 4 — LEITURA E OTIMIZAÇÃO (300 palavras):\nMétricas por fase / Quando tomar decisão: critérios objetivos, não emocionais / Escalar com cautela\n\nGLOSSÁRIO DE ADS: 15 termos com definição precisa."},
+{l:"Copywriting para Instagram: Frameworks e Templates de Legendas",f:"PAPEL: Você é copywriter especializado em redes sociais com expertise em psicologia da persuasão aplicada ao Instagram.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NICHO: [específico]\n→ PÚBLICO: [descreva com especificidade]\n→ OBJETIVO PRINCIPAL DAS LEGENDAS: [engajamento / conversão / autoridade / misto]\n→ TOM DA MARCA: [profissional e técnico / acolhedor e próximo / inspirador / direto e prático]\n→ VARIAÇÃO OBRIGATÓRIA: para cada framework, gere 2 exemplos completos em tons distintos — um mais emocional e um mais racional\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Técnicas citadas: AIDA, PAS, storytelling — escolas verificáveis\n→ NÃO prometer taxas de engajamento específicas\n→ Exemplos: originais e específicos ao nicho informado — não genéricos\n→ Adapte todos os exemplos ao tom da marca informado\n\nSEÇÃO 1 — PSICOLOGIA DA LEGENDA (200 palavras):\nComo o usuário processa / Diferença de legenda de awareness, engajamento e conversão / O 'ver mais': como criar a ruptura\n\nSEÇÃO 2 — 4 FRAMEWORKS COM EXEMPLOS PARA O NICHO INFORMADO (500 palavras):\n\nFRAMEWORK 1 — HOOK + VALOR + CTA:\n2 exemplos: emocional e racional\n\nFRAMEWORK 2 — PAS (Problema-Agitação-Solução):\n2 exemplos para o nicho\n\nFRAMEWORK 3 — STORYTELLING 3 ATOS:\nEstrutura + 1 exemplo completo de mini-história\n\nFRAMEWORK 4 — CONVERSÃO DIRETA:\n2 exemplos com CTAs diferentes\n\nSEÇÃO 3 — OS PRIMEIROS 125 CARACTERES (250 palavras):\n20 tipos de abertura com exemplos para o nicho / Técnica do cliffhanger\n\nSEÇÃO 4 — CTAs QUE CONVERTEM (150 palavras):\n10 CTAs mais eficazes / Diferença de engajamento vs conversão\n\nSEÇÃO 5 — 5 TEMPLATES COMPLETOS PARA O NICHO INFORMADO."},
+{l:"Guia Completo: Monetização do Instagram para Criadores",f:"PAPEL: Você é estrategista de negócios digitais para criadores com experiência em múltiplas fontes de renda via Instagram no mercado brasileiro.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NICHO DO CRIADOR: [específico]\n→ TAMANHO ATUAL: [seguidores]\n→ TAXA DE ENGAJAMENTO ATUAL: [estimativa %]\n→ OBJETIVO DE RENDA: [renda complementar / substituir renda / escalar negócio]\n→ O QUE JÁ TEM: [nenhum produto / já vende algo / serviços]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ NÃO prometer valores de renda específicos\n→ Seguidores para monetização: ser realista — 1k engajado pode gerar renda; 100k desengajado pode não\n→ Instagram Bonus: disponibilidade no Brasil limitada — verificar status atual\n→ Divulgação comercial: verificar diretrizes CONAR atuais\n→ Impostos sobre renda digital: mencionar obrigatoriedade e recomendar contador\n→ ADAPTE o modelo recomendado ao nicho, tamanho e objetivo informados\n\nMínimo 1.400 palavras. ESTRUTURA:\n\nSEÇÃO 1 — A LÓGICA DA MONETIZAÇÃO (200 palavras):\nAudiência grande vs compradora / Resolver problema específico = monetizar mais rápido / Qual modelo para qual estágio\n\nSEÇÃO 2 — PRODUTO DIGITAL PRÓPRIO (300 palavras):\nE-books, cursos, planilhas — para o nicho informado / Plataformas verificadas / Timeline realista\n\nSEÇÃO 3 — SERVIÇOS E CONSULTORIA (250 palavras):\nPacotes de serviço para o nicho / Precificação por valor / Como filtrar clientes pelo conteúdo\n\nSEÇÃO 4 — AFILIADOS E PARCERIAS (250 palavras):\nPlatformas verificadas / Recomendar autenticamente / Obrigações de divulgação\n\nSEÇÃO 5 — PUBLIPOST E PARCERIAS COMERCIAIS (200 palavras):\nPrecificação por engajamento / Mídia kit / Como encontrar marcas\n\nSEÇÃO 6 — FUNIL DE RENDA PARA O PERFIL INFORMADO (200 palavras):\nCombinação de modelos para o estágio atual / Plano de implementação em fases"}
+]},
+{id:"ia",cat:"Criação de Conteúdo com IA",icon:"🤖",color:"#c8a55a",bg:"rgba(200,165,90,0.1)",prompts:[
+{l:"Guia Completo: Fluxo de Trabalho com IA para Criadores de E-books",f:"PAPEL: Você é especialista em workflows de criação de conteúdo assistida por IA, com experiência prática com Claude, ChatGPT, Gemini e ferramentas especializadas.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PERFIL DO CRIADOR: [ex: empreendedora digital sem equipe / ghostwriter freelancer / especialista em saúde querendo monetizar / influenciadora migrando para infoprodutos]\n→ NÍVEL TÉCNICO COM IA: [nunca usou / usa ChatGPT básico / usuário intermediário / quer ir além do básico]\n→ VOLUME DE PRODUÇÃO: [1 e-book por mês / 2-3 por mês / múltiplos clientes]\n→ MAIOR MEDO/RESISTÊNCIA: [ex: perder voz autoral / insegurança sobre copyright / não sabe por onde começar]\n→ NICHO: [ex: saúde / negócios / autodesenvolvimento / culinária / educação]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Ferramentas de IA mudam rapidamente — SEMPRE verificar no site oficial\n→ NÃO inventar recursos que ferramentas não têm\n→ Alucinações de IA: completamente honesto sobre o problema — LLMs inventam com confiança, especialmente datas, estatísticas, referências\n→ IA como amplificador, não substituto\n→ RESPONDA ao maior medo informado na abertura do guia\n→ ADAPTE exemplos de workflow ao nicho e perfil informados\n\nSEÇÃO 1 — O QUE A IA FAZ E NÃO FAZ (300 palavras):\nComo LLMs funcionam / O que faz bem: estruturação, variação, síntese / O que faz MAL: fatos recentes, estatísticas, voz autoral / Alucinações: o que são e como reconhecer / Resposta direta ao maior medo informado\n\nSEÇÃO 2 — PROMPT ENGINEERING PARA O NICHO INFORMADO (400 palavras):\n5 elementos com exemplos específicos do nicho / Exemplos de prompts fracos vs fortes\n\nSEÇÃO 3 — WORKFLOW PARA E-BOOKS DO NICHO INFORMADO (400 palavras):\n6 fases com exemplos concretos do nicho / O que verificar manualmente é específico para o nicho / Timeline realista: 1-3 semanas, não 1 dia\n\nSEÇÃO 4 — WORKFLOW PARA REDES SOCIAIS (300 palavras):\nCalendário editorial para o nicho / Checklist de humanização de 10 pontos\n\nSEÇÃO 5 — FERRAMENTAS PARA O PERFIL E VOLUME INFORMADOS (200 palavras):\nStack recomendado para o perfil / Como construir sem pagar por tudo"},
+{l:"Guia Técnico Completo de Prompt Engineering",f:"PAPEL: Você é engenheiro de prompts e especialista em interação com LLMs, com experiência em criar sistemas de prompt para uso comercial.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NÍVEL DO LEITOR: [nunca fez prompt avançado / já usa mas de forma básica / quer profissionalizar]\n→ CASO DE USO PRINCIPAL: [criação de e-books / posts de redes sociais / copy de vendas / conteúdo educacional]\n→ FERRAMENTA PRINCIPAL QUE USA: [Claude / ChatGPT / Gemini / várias]\n→ VARIAÇÃO OBRIGATÓRIA: para cada técnica, gere 1 exemplo de prompt FRACO vs 1 FORTE para o caso de uso informado\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Técnicas reais e documentadas: few-shot, chain-of-thought, role prompting, negative prompting\n→ NÃO inventar termos técnicos\n→ Comportamento de LLMs varia entre modelos e versões — mencionar isso\n→ ADAPTE todos os exemplos ao caso de uso informado\n\nMínimo 1.500 palavras. ESTRUTURA:\n\nSEÇÃO 1 — COMO LLMs PROCESSAM PROMPTS (250 palavras):\nPredição de próximo token / Por que início e fim têm mais atenção / Tokens: o que são na prática\n\nSEÇÃO 2 — OS 6 ELEMENTOS DO PROMPT MASTER (400 palavras):\nPara cada elemento: definição + por que funciona + exemplo FRACO vs FORTE para o caso de uso informado:\nPAPEL / CONTEXTO / TAREFA / FORMATO / EXEMPLOS (few-shot) / RESTRIÇÕES (negative prompting)\n\nSEÇÃO 3 — TÉCNICAS AVANÇADAS (400 palavras):\nCHAIN OF THOUGHT: o que é, quando usar, exemplo\nSELF-CONSISTENCY: pedir múltiplas versões e comparar\nDECOMPOSIÇÃO DE TAREFAS: como quebrar em subtarefas\nITERAÇÃO ESTRUTURADA: refinar em múltiplas rodadas\nMETA-PROMPTING: pedir à IA para melhorar o próprio prompt\n\nSEÇÃO 4 — PROMPTS ANTI-ALUCINAÇÃO (300 palavras):\nPor que LLMs alucinam / Técnicas verificadas para reduzir / Instruir a dizer 'não sei' / Pedir sinalizações de incerteza\n\nBIBLIOTECA: 5 prompts mestres prontos para copiar, adaptados ao caso de uso informado."},
+{l:"Capítulo: Automação de Conteúdo Sem Perder Autenticidade",f:"PAPEL: Você é especialista em automação de marketing de conteúdo com experiência em criar sistemas escaláveis que mantêm voz autoral.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ NICHO DO CRIADOR: [específico]\n→ VOLUME DE CONTEÚDO QUE PRECISA PRODUZIR: [ex: 1 post/dia / 3 posts/semana + 1 newsletter]\n→ MAIOR MEDO COM AUTOMAÇÃO: [ex: perder voz autoral / publicar algo errado sem perceber / ficar genérico]\n→ NÍVEL TÉCNICO: [não sabe nada de automação / usa alguns apps / intermediário]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ n8n, Make (Integromat), Zapier — ferramentas reais verificadas — verificar planos e preços atuais\n→ Automação total de conteúdo autêntico é IMPOSSÍVEL — ser honesto sobre limites\n→ NÃO sugerir publicar sem revisão humana — o risco de reputação é real\n→ RESPONDA ao maior medo informado na abertura\n→ Adapte a complexidade da automação ao nível técnico informado\n\nSEÇÃO 1 — O PARADOXO DA AUTOMAÇÃO AUTÊNTICA (200 palavras):\nO que pode ser automatizado sem perder autenticidade / O que NUNCA deve / A hierarquia: automatizar processos, não julgamentos\n\nSEÇÃO 2 — 4 NÍVEIS DE AUTOMAÇÃO (400 palavras):\nNível 1: PESQUISA E IDEAÇÃO — prompts específicos para o nicho informado\nNível 2: RASCUNHO — protocolo de revisão obrigatório de 5 pontos\nNível 3: REPURPOSING — o que funciona e o que não funciona no nicho\nNível 4: PUBLICAÇÃO E DISTRIBUIÇÃO — ferramentas por nível técnico informado\n\nSEÇÃO 3 — MANTENDO A VOZ AUTORAL NO NICHO INFORMADO (350 palavras):\nO que é voz autoral para o nicho / Como documentar a sua / CHECKLIST DE HUMANIZAÇÃO: 10 pontos antes de publicar\n\nSEÇÃO 4 — IMPLEMENTAÇÃO PARA O VOLUME E NÍVEL INFORMADOS (350 palavras):\nWorkflow completo adaptado ao volume / Tempo economizado vs investido: realista / Como começar simples / Sinais de alerta"},
+{l:"Capítulo: Ética, Copyright e Transparência no Uso de IA",f:"PAPEL: Você é especialista em ética de IA e direito digital, com experiência em traduzir questões jurídicas complexas para criadores de conteúdo.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ TIPO DE CRIADOR: [ex: produtor de e-books / ghostwriter para clientes / influenciador digital / jornalista de conteúdo]\n→ NICHO: [ex: saúde / finanças / autodesenvolvimento / culinária]\n→ MAIOR PREOCUPAÇÃO ÉTICA DO PÚBLICO: [ex: usar IA em nicho de saúde sem declarar / copyright das imagens geradas / dar IA como totalmente humano]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO — DIREITO:\n→ Leis mudam — usar linguagem 'regulamentação vigente em [período]' e recomendar verificação com advogado\n→ NÃO fazer afirmações categóricas sobre o que é legal/ilegal em questões em disputa\n→ Copyright de conteúdo de IA: área com decisões conflitantes — evitar afirmações absolutas\n→ LGPD e Marco Civil: implicações gerais, não artigos específicos sem certeza\n→ Responda diretamente à maior preocupação ética informada\n\nMínimo 1.200 palavras. ESTRUTURA:\n\nSEÇÃO 1 — O ESTADO ATUAL DAS QUESTÕES LEGAIS (300 palavras):\nCopyright de conteúdo de IA / A questão dos dados de treinamento / O que criadores brasileiros precisam considerar / Resposta à preocupação específica informada\n\nSEÇÃO 2 — TRANSPARÊNCIA E DIVULGAÇÃO (300 palavras):\nQuando e como divulgar uso de IA / Impacto na confiança da audiência / O que plataformas exigem / Para o tipo de criador informado: protocolo específico\n\nSEÇÃO 3 — PROTEÇÃO DO TRABALHO DO CRIADOR (300 palavras):\nO que protege mesmo usando IA / Como documentar o processo / Contratos com clientes: cláusulas sobre IA\n\nSEÇÃO 4 — ÉTICA PRÁTICA NO NICHO INFORMADO (300 palavras):\nAlucinações publicadas = risco de reputação real / Responsabilidade aumentada em nichos sensíveis / Como criar conteúdo responsável / O que fazer quando a IA gera algo inadequado\n\nCONCLUSÃO: como se diferenciar pela qualidade e ética, não apenas pela velocidade."},
+{l:"Estrutura Editorial Completa: E-book sobre IA para Criadores",f:"PAPEL: Você é editor de produtos de informação e especialista em tecnologia para criadores, com experiência em publicar guias sobre IA para audiências não-técnicas no Brasil.\n\n⚙️ PERSONALIZE ANTES DE USAR:\n→ PÚBLICO-ALVO: [descreva com especificidade]\n→ NÍVEL TÉCNICO DO PÚBLICO: [nunca usou IA / usa básico / quer profissionalizar]\n→ NICHO DO PÚBLICO: [específico]\n→ MAIOR DOR QUE O E-BOOK RESOLVE: [ex: não sabe por onde começar / está perdendo tempo produzindo conteúdo manualmente / quer escalar sem contratar equipe]\n→ DIFERENCIAL vs outros guias de IA: [o que você tem que outros não têm]\n\n⚠️ INSTRUÇÕES ANTI-ALUCINAÇÃO:\n→ Ferramentas: apenas existentes e verificadas — com nota 'verifique disponibilidade e preços atuais'\n→ Capacidades de IA: linguagem precisa — não exagerar nem subestimar\n→ O campo muda rapidamente: mencionar que o e-book é ponto de partida\n→ NÃO prometer que o leitor vai 'dominar IA' — use 'usar IA de forma estratégica e eficaz'\n\nESTRUTURA EDITORIAL COMPLETA:\n\nCAPA E MARKETING:\n→ Título + 3 subtítulos para o público informado\n→ Texto de contracapa (150 palavras)\n→ 3 taglines para Instagram\n\nPÁGINAS INICIAIS:\n→ Nota sobre IA: transparência sobre uso de IA na criação do próprio e-book\n→ Disclaimer sobre velocidade de mudanças\n→ Glossário inicial: 10 termos com definições precisas\n\nMÓDULO 1 — FUNDAMENTOS (800 palavras completos):\nAdaptado ao nível técnico informado — O que são LLMs / O que muda para o nicho informado / Oportunidades reais vs hype / A questão ética\n\nMÓDULOS 2-5 (estrutura de cada):\nFerramentas verificadas / Workflows para o nicho / Prompt engineering acessível / Ética e futuro\n\nAPÊNDICES:\nTemplates de prompts para o nicho / Checklist de humanização / Recursos verificados"}
+]}
 ];
 
-let currentFilter = 'todos';
-let expandedCards = {};
+var filt="todos", exp={}, opn={};
 
-function renderGrid(filteredData) {
-  const grid = document.getElementById('grid');
-  
-  if (filteredData.length === 0) {
-    grid.innerHTML = '<div class="no-results"><span>🔍</span>Nenhum prompt encontrado.<br>Tente outra palavra-chave.</div>';
-    return;
-  }
-
-  grid.innerHTML = filteredData.map((cat, idx) => {
-    const isExpanded = expandedCards[cat.id];
-    const visiblePrompts = isExpanded ? cat.prompts : cat.prompts.slice(0, 3);
-    
-    return `
-    <div class="card" data-category="${cat.id}" style="animation-delay:${idx * 0.06}s">
-      <div class="card-header">
-        <div class="card-icon" style="background:${cat.bg}; font-size:22px">${cat.icon}</div>
-        <div class="card-meta">
-          <div class="card-category" style="color:${cat.color}">${cat.category}</div>
-          <div class="card-title">${cat.category}</div>
-          <div class="card-count">${cat.prompts.length} prompts prontos para usar</div>
-        </div>
-      </div>
-      <div class="prompts-list">
-        ${visiblePrompts.map((p, i) => `
-          <div class="prompt-item" onclick="copyPrompt(this, ${idx}, ${i})">
-            <div class="prompt-text">${p.text}</div>
-            <button class="copy-btn" title="Copiar">📋</button>
-          </div>
-        `).join('')}
-      </div>
-      <div class="card-footer">
-        <button class="show-more" onclick="toggleExpand('${cat.id}')">
-          ${isExpanded ? '▲ Mostrar menos' : `▼ Ver mais ${cat.prompts.length - 3} prompts`}
-        </button>
-        <button class="copy-all" onclick="copyAll(${idx})">Copiar todos</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function setFilter(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  filterAll();
-}
-
-function filterAll() {
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  
-  let filtered = data.filter(cat => {
-    if (currentFilter !== 'todos' && cat.id !== currentFilter) return false;
-    if (!search) return true;
-    return cat.prompts.some(p => p.text.toLowerCase().includes(search)) ||
-           cat.category.toLowerCase().includes(search);
+function ren(){
+  var q=document.getElementById("q").value.toLowerCase();
+  var list=D.filter(function(c){
+    if(filt!=="todos"&&c.id!==filt)return false;
+    if(!q)return true;
+    return c.cat.toLowerCase().indexOf(q)>=0||c.prompts.some(function(p){return p.l.toLowerCase().indexOf(q)>=0||p.f.toLowerCase().indexOf(q)>=0;});
   });
-
-  if (search) {
-    filtered = filtered.map(cat => ({
-      ...cat,
-      prompts: cat.prompts.filter(p => p.text.toLowerCase().includes(search))
-    })).filter(cat => cat.prompts.length > 0);
-  }
-
-  renderGrid(filtered);
+  if(q)list=list.map(function(c){return Object.assign({},c,{prompts:c.prompts.filter(function(p){return p.l.toLowerCase().indexOf(q)>=0||p.f.toLowerCase().indexOf(q)>=0;})});}).filter(function(c){return c.prompts.length>0;});
+  var g=document.getElementById("grid");
+  if(!list.length){g.innerHTML="<div class='nr'><span>🔍</span>Nenhum prompt encontrado para essa busca.</div>";return;}
+  g.innerHTML=list.map(function(c,ci){
+    var vis=exp[c.id]?c.prompts:c.prompts.slice(0,2);
+    return "<div class='card' data-id='"+c.id+"' style='animation-delay:"+ci*0.05+"s'>"
+      +"<div class='ch'><div class='ci' style='background:"+c.bg+"'>"+c.icon+"</div><div>"
+      +"<div class='cc' style='color:"+c.color+"'>"+c.cat+"</div>"
+      +"<div class='ct'>"+c.cat+"</div>"
+      +"<div class='cq'>"+c.prompts.length+" prompts anti-alucinação · campos de personalização</div>"
+      +"</div></div>"
+      +"<div class='pl'>"+vis.map(function(p,pi){
+        var k=c.id+"_"+pi;var isO=opn[k];
+        return "<div class='pi'>"
+          +"<div class='ph' onclick='tog(\""+k+"\")'>"
+          +"<span class='plb'>"+p.l+"</span>"
+          +"<div class='pa'>"
+          +"<button class='cb"+(opn[k+"_ok"]?" ok":"")+"' onclick='cpy(event,\""+c.id+"\","+pi+")'>"+(opn[k+"_ok"]?"✓":"📋")+"</button>"
+          +"<button class='eb'>"+(isO?"▲":"▼")+"</button>"
+          +"</div></div>"
+          +"<div class='pb"+(isO?" open":"")+"'><div class='pf'>"+escHtml(p.f)+"</div></div>"
+          +"</div>";
+      }).join("")+"</div>"
+      +"<div class='cf'>"
+      +"<button class='smb' onclick='togE(\""+c.id+"\")'>"+(exp[c.id]?"▲ Mostrar menos":"▼ Ver mais "+(c.prompts.length-2)+" prompts")+"</button>"
+      +"<button class='cab' onclick='cpyAll(\""+c.id+"\")'>Copiar todos</button>"
+      +"</div></div>";
+  }).join("");
 }
 
-function toggleExpand(id) {
-  expandedCards[id] = !expandedCards[id];
-  filterAll();
-  setTimeout(() => {
-    document.querySelector(`[data-category="${id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
+function escHtml(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function tog(k){opn[k]=!opn[k];ren();}
+function togE(id){exp[id]=!exp[id];ren();}
+function setF(f,b){filt=f;document.querySelectorAll(".fb").forEach(function(x){x.classList.remove("on");});b.classList.add("on");ren();}
+function tg(){var b=document.getElementById("gbody");var a=document.getElementById("garr");b.classList.toggle("open");a.textContent=b.classList.contains("open")?"▲":"▼";}
+function cpTmpl(){
+  var t="PUBLICO-ALVO: [quem vai ler — seja especifico]\nFAIXA ETARIA: [ex: 30-45 anos]\nCONTEXTO/PROFISSAO: [ex: empreendedoras digitais, enfermeiras]\nPRINCIPAL DOR: [o que tira o sono desse publico]\nTOM DESEJADO: [tecnico e objetivo / acolhedor / inspirador / direto]\nNIVEL DE CONHECIMENTO: [iniciante / intermediario / avancado]\n\nINSTRUCAO DE VARIACAO:\n- Gere [numero] versoes distintas de qualquer cenario ou exemplo\n- NAO repita: [liste os cliches do nicho que quer evitar]\n- Para cada variacao: ative pelo menos 3 sentidos (visual, auditivo, emocional)";
+  navigator.clipboard.writeText(t).then(function(){toast("Template copiado! Cole no inicio de qualquer prompt.");});
 }
-
-function stripHtml(html) {
-  return html.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-}
-
-function copyPrompt(el, catIdx, promptIdx) {
-  const cat = data[catIdx];
-  const text = stripHtml(cat.prompts[promptIdx].text);
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = el.querySelector('.copy-btn');
-    btn.textContent = '✓';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 2000);
-    showToast('Prompt copiado!');
+function cpy(e,cid,pi){
+  e.stopPropagation();
+  var c=D.filter(function(x){return x.id===cid;})[0];
+  navigator.clipboard.writeText(c.prompts[pi].f).then(function(){
+    var k=cid+"_"+pi+"_ok";opn[k]=true;ren();toast("Prompt copiado!");
+    setTimeout(function(){opn[k]=false;ren();},2500);
   });
 }
-
-function copyAll(catIdx) {
-  const cat = data[catIdx];
-  const text = cat.prompts.map((p, i) => `${i+1}. ${stripHtml(p.text)}`).join('\n\n');
-  navigator.clipboard.writeText(text).then(() => showToast(`${cat.prompts.length} prompts copiados!`));
+function cpyAll(cid){
+  var c=D.filter(function(x){return x.id===cid;})[0];
+  var t=c.prompts.map(function(p,i){return "=== PROMPT "+(i+1)+": "+p.l+" ===\n\n"+p.f;}).join("\n\n\n");
+  navigator.clipboard.writeText(t).then(function(){toast(c.prompts.length+" prompts copiados!");});
 }
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = '✓ ' + msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+function toast(m){
+  var t=document.getElementById("toast");t.textContent="✓ "+m;t.classList.add("show");
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show");},2500);
 }
-
-renderGrid(data);
+ren();
 </script>
 </body>
 </html>
